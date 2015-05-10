@@ -6,6 +6,7 @@ output: ioslides_presentation
 ## 學習目標
 
 (4hr)
+
 1. 了解Shiny的整體架構和運作原理(30 min ~ 1 hr)
 2. 可以寫出簡單的Shiny Application (1 ~ 2 hr)
     - 輸入Select, Checkbox, Slidebar, Text
