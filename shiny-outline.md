@@ -74,6 +74,8 @@ ui.R --R--> HTML/CSS/Javascript ---> browser <--> R <--- server.R
 
 ## 你的第四個Shiny App（學生做）
 
+- 外部資料源（SQL database）
+
 ## Advance
 
 ## Shiny的擴充
