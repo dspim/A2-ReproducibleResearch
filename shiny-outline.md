@@ -61,21 +61,21 @@ ui.R --R--> HTML/CSS/Javascript ---> browser <--> R <--- server.R
 
 ## 你的第一個Shiny App（學生做）
 
-- Select + 表的輸出
+- Select
 
 ## 你的第二個Shiny App（學生做）
 
-- 第一個Shiny App沒有用到的輸入
-- 圖的輸出
+- Select + Interactive 
 
 ## 你的第三個Shiny App（學生做）
 
 - 第二個Shiny App沒有用到的輸入
-- 圖表的輸出(Tab Set)
 
 ## 你的第四個Shiny App（學生做）
 
-- 外部資料源（SQL database）
+- ...
+
+## ...
 
 ## Advance
 
