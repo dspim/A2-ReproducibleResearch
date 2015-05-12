@@ -4,8 +4,8 @@ author: "George & Wush"
 date: '`r Sys.Date()`'
 output:
   ioslides_presentation:
-    #css: css/ioslides.css
-    #logo: assets/img/Taiwan-R-logo.png
+    css: css/dsp.css
+    # logo: assets/img/Taiwan-R-logo.png
     widescreen: yes
 subtitle: shiny
 runtime: shiny
@@ -25,7 +25,7 @@ sessionInfo()
 ```
 
 
-## What is Shiny?
+## 甚麼是shiny ?
 
 - Web Application Framework for R
 - Reactive Programming (Interactive user interfaces)
@@ -34,7 +34,7 @@ sessionInfo()
 - Provided by RStudio from 2012-11 Beta
 - Until now 2015-05 v0.11
 
-## Why Choosing Shiny
+## 為什麼要選shiny
 
 - Let R User become a simple web designer/devoleper  
 - Using R language then you can create web app  
@@ -42,6 +42,50 @@ sessionInfo()
 - Support HTML element  
     - Input: select, checkbox, radio, etc...  
     - Output: text, table, plot, etc...  
+
+## Shiny的運作原理
+
+- 基本架構  
+    - `ui.R`: 客戶端，負責前端使用者介面的呈現 
+    - `server.R`: 伺服器端，負責後端資料處理與計算
+    - `global.R(optional)`: 放置ui與server共用的設定(`source`、`data`)
+
+<div class="columns-2">
+  ![Image](img/interactive-1.png)
+
+  ![Image](img/interactive-2.png)
+</div>
+
+## `ui.R`  
+
+<div class="columns-2">
+  ![Image](img/ui.R-1.png)
+
+  ![Image](img/ui.R-2.png)
+</div>
+
+## `server.R`
+
+- Environment Variable  
+    - 最外層 Run once: 讀套件、data  
+- `shinyServer()`
+    - 第一層 Function(), Run once per user
+        - input list, output list, session
+    - 第二層 Render Function, Run often
+        - 建立輸出元件
+
+
+## Reactivity
+
+<div class="notes">
+This is my *note*.
+
+- It can contain markdown
+- like this list
+
+</div>
+
+
 
 ## Slide with Interactive Plot
 
@@ -62,3 +106,32 @@ renderPlot({
   lines(dens, col = "blue")
 })
 ```
+
+
+
+# 其他整合應用
+
+## ggvis
+
+- 2014年中才放在CRAN的套件，持續成長中
+- 使用pipe，語法類似plot
+- 部分功能如tooltip需搭配shiny server才能使用
+- SVG
+
+```{r message=FALSE, echo=TRUE, warning=FALSE}
+library(knitr)
+library(ggvis)
+out = mtcars %>%
+    ggvis(x = ~wt, y = ~mpg) %>%
+    layer_smooths(se=TRUE, opacity := 0.5, opacity.hover := 0.75) %>% 
+    layer_points(fill = ~factor(cyl), size := 50, size.hover := 200) %>%
+    set_options(hover_duration = 250) 
+```
+
+## ggvis
+
+```{r message=FALSE, echo=FALSE, fig.height=5, fig.width=8}
+out
+```
+
+
