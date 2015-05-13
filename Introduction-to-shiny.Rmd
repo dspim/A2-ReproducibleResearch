@@ -11,7 +11,7 @@ subtitle: shiny
 runtime: shiny
 ---
 
-# 傢伙準備好
+# 傢俬準備好
 
 ## 環境安裝
 
@@ -24,6 +24,7 @@ devtools::install_github('rstudio/shinyapps')
 sessionInfo()
 ```
 
+# shiny shiny little star
 
 ## 甚麼是shiny ?
 
@@ -74,6 +75,36 @@ sessionInfo()
     - 第二層 Render Function, Run often
         - 建立輸出元件
 
+# I want learn more
+
+## Layout
+
+通常指網頁版面，頁面的形式，佈局
+
+- Sidebar Layouts  
+    - Simple default layout  
+- Grid Layouts  
+    - Custom application layouts: fluid & fixed
+    - `fluidPage(fluidRow(column()))`
+        - a flexibly sub-dividable 12-column grid for layout
+- Segmenting Layouts
+    - `navbarPage(tabPanel(), navbarMenu())`
+    - `tabsetPanel(tabPanel()), navlistPanel(tabPanel())`
+- Responsive Layout
+    - automatically adapt its layout for viewing on different sized devices
+
+## Layout
+
+<img src="img/Fluid.png" style='max-width: 100%;max-height:100%'>
+
+
+<img src="img/Responsive-Layout.png" style='max-width: 150%;max-height:60%'>
+[Responsive Layout](http://goo.gl/x7fh2U)  
+
+
+## Useful Layout {.flexbox .vcenter}
+
+<img src="img/Useful-Layout.png" style='max-width: 150%;max-height:120%'>
 
 ## Reactivity
 
