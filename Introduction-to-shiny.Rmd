@@ -13,6 +13,9 @@ runtime: shiny
 
 # 傢俬準備好
 
+<img src="img/dsp-page.png" style="display:none"/>
+<img src="img/dsp-front-cover.png" style="display:none"/>
+
 ## 環境安裝
 
 R 套件安裝
