@@ -12,3 +12,19 @@ slides > slide:not(.nobackground) {
   background-position:center; 
   background-size: 100% 100%;
 }
+
+.title-slide hgroup {
+  position:relative; 
+  top: 25%; 
+  left: 25%; 
+}
+
+.title-slide hgroup > h1 {
+ font-family: 'Oswald', 'Helvetica', sanserif; 
+}
+
+.title-slide hgroup > h1 {
+  color: #535E43 ;  /* ; #EF5150 */
+  font-size: 250%;
+} 
+
