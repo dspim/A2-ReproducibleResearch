@@ -11,12 +11,19 @@ subtitle: shiny
 runtime: shiny
 ---
 
+```{r setup, include = FALSE}
+library(knitr)
+library(shiny)
+library(rmarkdown)
+library(ggvis)
+```
+
 # 傢俬準備好
 
 <img src="img/dsp-page.png" style="display:none"/>
 <img src="img/dsp-front-cover.png" style="display:none"/>
 
-## 環境安裝
+## 環境安裝 {.flexbox .vcenter}
 
 R 套件安裝
 ```{r Surround, eval=FALSE}
@@ -29,23 +36,78 @@ sessionInfo()
 
 # shiny shiny little star
 
-## 甚麼是shiny ?
+## 甚麼是shiny ? {.flexbox .vcenter}
 
-- Web Application Framework for R
-- Reactive Programming (Interactive user interfaces)
-- Default UI theme Bootstrap (Twitter Bootstrap)
-- Support HTML/CSS/JavaScript/Markdown
-- Provided by RStudio from 2012-11 Beta
-- Until now 2015-05 v0.11
+<div class="columns-2">
+- 一個基於R 語言的網頁應用框架
+    - 可以用R 快速製作網頁應用
+    - 利用近代網頁技術製作動態網頁
+    - 分析結果「會動了」
+- 由 RStudio 於 2012-11 年正式提出Beta版
+- 目前於 2015-05 釋出 v0.11
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
-## 為什麼要選shiny
+```{r shiny-example, echo = FALSE}
+inputPanel(
+  selectInput("n_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20)
+)
 
-- Let R User become a simple web designer/devoleper  
-- Using R language then you can create web app  
-    - know more about HTML/CSS/Javascript will be better  
-- Support HTML element  
-    - Input: select, checkbox, radio, etc...  
-    - Output: text, table, plot, etc...  
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
+       xlab = "Duration (minutes)", main = "Geyser eruption duration")
+  
+  dens <- density(faithful$eruptions, adjust = 1)
+  lines(dens, col = "blue")
+})
+```
+
+</div>
+
+## 學Shiny的好處是？
+
+
+<div class="columns-2">
+- 目前在R 中，建立互動式分析報表最簡單的工具
+    - 需要理解網頁應用的運作原理
+    - **不需要**理解撰寫網頁應用的工具（HTML、CSS和Javascript）
+        - 但是若想要擴充Shiny，則需要會這些工具
+    - **不需要**改寫已經用R 撰寫的分析流程
+        - 但是若希望能提供流暢的使用者體驗，則需要適度的優化
+- 可以和現代的Javascript視覺化函式庫做整合
+    - [Introducing ggvis](http://blog.rstudio.org/2014/06/23/introducing-ggvis/)
+    - [htmlwidgets: JavaScript data visualization for R](http://blog.rstudio.org/2014/12/18/htmlwidgets-javascript-data-visualization-for-r/)
+
+```{r ggvis-example, echo = FALSE}
+bootstrapPage(
+  ggvisOutput("p"),
+  uiOutput("p_ui")
+)
+
+mtcars %>%
+  ggvis(~wt, ~mpg) %>%
+  layer_points() %>%
+  layer_smooths(span = input_slider(0, 1)) %>%
+  bind_shiny("p", "p_ui")
+```
+</div>
+
+## 網頁應用的運作原理 {.flexbox .vcenter}
+
+- 客戶端：
+    - 瀏覽器進行畫面的呈現
+    - 瀏覽器和使用者進行互動
+        - 依據互動的過程，瀏覽器隨時會和伺服器交換資料
+            - 瀏覽器發出*Request*
+            - 伺服器回傳*Response*
+- 伺服器端：
+    - 伺服器提供畫面的規格給瀏覽器
+    - 伺服器再依據瀏覽器提供的資訊，回傳使用者需要的資料
 
 ## Shiny的運作原理
 
@@ -59,6 +121,67 @@ sessionInfo()
 
   ![Image](img/interactive-2.png)
 </div>
+
+## Shiny - 客戶端輸入：`ui.R`
+
+- shiny 會將 `ui.R`的R 物件轉換為HTML、CSS和Javascript，透過瀏覽器呈現
+- 透過Javascript，瀏覽器會將使用者的動作轉換為Request發回給Server
+
+```{r ui1, echo=TRUE}
+inputPanel(
+  selectInput("n_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20)
+)
+```
+
+```{r ui2, engine='R', results='markup', echo=FALSE}
+print(inputPanel(
+  selectInput("n_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20)
+))
+```
+
+## Shiny - 伺服器端：`server.R`
+
+- Shiny server處理瀏覽器傳來的Request，轉化為R 中的`input`
+- 我們撰寫R 函數將`input`轉換為`output`
+- Shiny server再把`output`轉換為`Response`傳回瀏覽器
+
+```{r server-demo, echo = TRUE, eval = FALSE}
+function(input, output) {
+  output$plot <- renderPlot({
+    hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
+         xlab = "Duration (minutes)", main = "Geyser eruption duration")
+    
+    dens <- density(faithful$eruptions, adjust = 1)
+    lines(dens, col = "blue")
+  })
+}
+```
+
+## Shiny - 客戶端輸出：`ui.R`
+
+- 透過Javascript，瀏覽器會將Server回傳的`Response`呈現在瀏覽器上
+
+```{r ui3, echo = TRUE, eval = TRUE, results='markup'}
+print(plotOutput("plot"))
+```
+
+```{r s2, echo = FALSE}
+inputPanel(
+  selectInput("n_breaks2", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20)
+)
+
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks2),
+       xlab = "Duration (minutes)", main = "Geyser eruption duration")
+  
+  dens <- density(faithful$eruptions, adjust = 1)
+  lines(dens, col = "blue")
+})
+```
+
 
 ## `ui.R`  
 
