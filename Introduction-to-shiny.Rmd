@@ -12,9 +12,11 @@ runtime: shiny
 ---
 
 ```{r setup, include = FALSE}
+knitr::opts_chunk$set(comment="", message=FALSE, warning=FALSE)
 library(knitr)
 library(shiny)
 library(rmarkdown)
+library(ggplot2)
 library(ggvis)
 ```
 
@@ -193,6 +195,90 @@ renderPlot({
     - 第二層 Render Function, Run often
         - 建立輸出元件
 
+# 動手做
+
+## Hello shiny
+
+<div class="code_block">  
+```{r eval=FALSE}
+# built-in Example
+runExample("01_hello")
+
+##############################
+### Hello Shiny - ui.R #######
+##############################
+library(shiny)
+
+# Define UI for application that plots random distributions 
+shinyUI(pageWithSidebar(
+  
+  # Application title
+  headerPanel("Hello Shiny!"),
+  
+  # Sidebar with a slider input for number of observations
+  sidebarPanel(
+    sliderInput("obs", "Number of observations:", 
+                min = 0, max = 1000, value = 500)
+  ),
+  
+  # Show a plot of the generated distribution
+  mainPanel(
+    plotOutput("distPlot")
+  )
+))
+
+##############################
+### Hello Shiny - server.R ###
+##############################
+library(shiny)
+
+# Define server logic required to generate and plot a random distribution
+shinyServer(function(input, output) {
+    
+    # Expression that generates a plot of the distribution. The expression is
+    # wrapped in a call to renderPlot to indicate that:
+    # 
+    # 1) It is 'reactive' and therefore should be automatically re-executed
+    # when inputs change 2) Its output type is a plot
+    output$distPlot <- renderPlot({
+        
+        # generate an rnorm distribution and plot it
+        dist <- rnorm(input$obs)
+        hist(dist)
+    })
+})
+
+```
+</div>
+
+## Shiny content
+
+那上面兩隻程式(`ui.R`,`server.R`)要放哪裡呢?  
+```{r}
+library(shiny)
+# other-examples
+dir(system.file("examples",package="shiny"))
+dir(system.file("examples/01_hello",package="shiny"))
+```
+
+## 小挑戰1:自行撰寫app
+
+將Hello Shiny 改為自己的App，並改生成exponential分配之直方圖。  
+
+> ~/myapp    \   
+> -- ui.R       <br />
+> -- server.R  \  
+
+`HINT`   
+- 確認工作環境 `getwd()`，有需要則設定工作環境`setwd(choose.dir())`  
+- 建立`myapp`目錄  
+- 利用上述 **Hello Shiny** 程式碼分別建立**ui.R**,**server.R**於**myapp**目錄下  
+- 將 `rnorm` 改為 `rexp`  
+- 建立完自行執行 `runApp(myApp)`  
+
+
+
+
 # I want learn more
 
 ## Layout
@@ -220,10 +306,42 @@ renderPlot({
 
 <img src="img/Useful-Layout.png" style='max-width: 100%;max-height: 110%'>
 
-## Navlist with ggplot2
+## navbarPage & navlistPanel
 
+```{r navlist, echo=FALSE}
+shinyApp(
+  ui = navbarPage("NavbarPage Example",
+    tabPanel("Tab1",
+      titlePanel("Navlist Panel Example"),
+      selectInput(inputId='cut', label='cut', levels(diamonds$cut)), #字串可以用unique
+      navlistPanel("Header Name",
+               tabPanel("barplot",plotOutput('plot1')),
+               tabPanel("dataTable",dataTableOutput(outputId="table"))
+      )#navlistPanel
+    )#tabPanel:Tab1
+  ), #shinyUI,navarPage
+  server = function(input, output, session) {
+    selectedData <- reactive({
+      filter(diamonds,cut == input$cut)
+    })
+    output$plot1 <- renderPlot({
+      diamond.p <- ggplot(data = selectedData(), 
+                    aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+      diamond.p + geom_bar(stat="identity", width=0.5) + coord_flip()
+      # geom_text can't using chinese text
+    })
+    output$table <- renderDataTable(selectedData())
+  },
+  options = list(height = 500)
+)
+```
+
+</div>
+
+## 小挑戰-4 (with code example)
+
+Q: 練習將barplot與dataTable製作成同個頁面的navlistpanel
 <div class="code_block">  
-
 ```{r eval=FALSE}
 runApp("apps/barplot")
 ##########
@@ -232,8 +350,13 @@ runApp("apps/barplot")
 library(shiny)
 library(ggplot2)
 library(dplyr)
- 
-shinyUI(fluidPage(
+
+## 這裡可以讀資料(實際上不建議這樣寫)
+## the working directory is under your apps_names directory
+# print(getwd())
+# load("../../data/ubikeweather_big5.rda")
+
+shinyUI(navbarPage("",
   titlePanel("Navlist panel example"),
   
   navlistPanel("header",
@@ -252,6 +375,11 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 
+## 這裡可以讀資料(實際上不建議這樣寫)
+## the working directory is under your apps_names directory
+# print(getwd())
+# load("../../data/ubikeweather_big5.rda")
+
 shinyServer(function(input, output, session) {
    
     selectedData <- reactive({
@@ -269,6 +397,7 @@ shinyServer(function(input, output, session) {
 ```
 
 </div>
+
 
 ## Reactivity
 
@@ -321,5 +450,3 @@ out
     - Configuring applications: `shinyapps::configureApp(APPNAME,size="small")`
     - Application authentication(目前只有付費才有此功能)
     - Terminate an app: `terminateApp("<your app's name>")`
-
-
