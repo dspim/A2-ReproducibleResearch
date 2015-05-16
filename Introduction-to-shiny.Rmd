@@ -84,8 +84,7 @@ sessionInfo()
 
 通常指網頁版面，頁面的形式，佈局
 
-- Sidebar Layouts  
-    - Simple default layout  
+- Sidebar Layouts(Simple default layout)
 - Grid Layouts  
     - Custom application layouts: fluid & fixed
     - `fluidPage(fluidRow(column()))`
@@ -98,16 +97,63 @@ sessionInfo()
 
 ## Layout
 
-<img src="img/Fluid.png" style='max-width: 100%;max-height:100%'>
-
-
-<img src="img/Responsive-Layout.png" style='max-width: 150%;max-height:60%'>
-[Responsive Layout](http://goo.gl/x7fh2U)  
-
+<img src="img/Fluid.png" style='max-width: 100%;max-height:90%'>
+<img src="img/Responsive-Layout.png" style='max-width: 140%;max-height:60%'>
+[Responsive Layout](http://goo.gl/x7fh2U)
 
 ## Useful Layout {.flexbox .vcenter}
 
-<img src="img/Useful-Layout.png" style='max-width: 150%;max-height:120%'>
+<img src="img/Useful-Layout.png" style='max-width: 100%;max-height: 110%'>
+
+## Navlist with ggplot2
+
+<div class="code_block">  
+
+```{r eval=FALSE}
+runApp("apps/barplot")
+##########
+# ui.R   #
+##########
+library(shiny)
+library(ggplot2)
+library(dplyr)
+ 
+shinyUI(fluidPage(
+  titlePanel("Navlist panel example"),
+  
+  navlistPanel("header",
+               selectInput('cut', 'cut', levels(diamonds$cut)), #字串可以用unique
+               tabPanel("First",plotOutput('plot1')
+               ),
+               tabPanel("Second",
+                        dataTableOutput(outputId="table")
+               )
+  )
+))
+############
+# server.R #
+############
+library(shiny)
+library(ggplot2)
+library(dplyr)
+
+shinyServer(function(input, output, session) {
+   
+    selectedData <- reactive({
+      filter(diamonds,cut == input$cut)
+    })
+    output$plot1 <- renderPlot({
+      bike.3p <- ggplot(data = selectedData(), 
+                        aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+      bike.3p + geom_bar(stat="identity", width=0.5) + coord_flip()
+      # geom_text can't using chinese text
+      })
+    output$table <- renderDataTable(selectedData())  
+   
+})
+```
+
+</div>
 
 ## Reactivity
 
