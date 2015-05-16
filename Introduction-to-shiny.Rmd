@@ -36,21 +36,16 @@ sessionInfo()
 
 # shiny shiny little star
 
-## 甚麼是shiny ? {.flexbox .vcenter}
+## 甚麼是shiny ?
 
 <div class="columns-2">
+
 - 一個基於R 語言的網頁應用框架
     - 可以用R 快速製作網頁應用
     - 利用近代網頁技術製作動態網頁
     - 分析結果「會動了」
 - 由 RStudio 於 2012-11 年正式提出Beta版
 - 目前於 2015-05 釋出 v0.11
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
 ```{r shiny-example, echo = FALSE}
 inputPanel(
@@ -71,14 +66,11 @@ renderPlot({
 
 ## 學Shiny的好處是？
 
-
 <div class="columns-2">
-- 目前在R 中，建立互動式分析報表最簡單的工具
+- 目前R中互動式分析報表最簡單的工具
     - 需要理解網頁應用的運作原理
-    - **不需要**理解撰寫網頁應用的工具（HTML、CSS和Javascript）
-        - 但是若想要擴充Shiny，則需要會這些工具
-    - **不需要**改寫已經用R 撰寫的分析流程
-        - 但是若希望能提供流暢的使用者體驗，則需要適度的優化
+    - **不需要**理解撰寫網頁應用工具（HTML、CSS和Javascript)，但是若想要擴充Shiny，則需要會這些工具
+    - **不需要**改寫已經用R 撰寫的分析流程，但是若希望能提供流暢的使用者體驗，則需要適度的優化
 - 可以和現代的Javascript視覺化函式庫做整合
     - [Introducing ggvis](http://blog.rstudio.org/2014/06/23/introducing-ggvis/)
     - [htmlwidgets: JavaScript data visualization for R](http://blog.rstudio.org/2014/12/18/htmlwidgets-javascript-data-visualization-for-r/)
@@ -289,29 +281,6 @@ This is my *note*.
 </div>
 
 
-
-## Slide with Interactive Plot
-
-```{r, echo=FALSE}
-inputPanel(
-  selectInput("n_breaks", label = "Number of bins:",
-              choices = c(10, 20, 35, 50), selected = 20),
-  
-  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
-              min = 0.2, max = 2, value = 1, step = 0.2)
-)
-
-renderPlot({
-  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
-       xlab = "Duration (minutes)", main = "Geyser eruption duration")
-  
-  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
-  lines(dens, col = "blue")
-})
-```
-
-
-
 # 其他整合應用
 
 ## ggvis
@@ -336,5 +305,22 @@ out = mtcars %>%
 ```{r message=FALSE, echo=FALSE, fig.height=5, fig.width=8}
 out
 ```
+
+# 期末成發
+
+## shinyapps(v0.3.64)
+
+- [www.shinyapps.io](https://www.shinyapps.io/)
+- [Getting started with shinyapps.io](http://shiny.rstudio.com/articles/shinyapps.html)
+- Platform as a service for hosting shiny web apps
+    1. Windows users: Rtools  
+    2. Mac users: XCode Command Line Tools  
+    3. Linux users: GCC  
+- The latest version of the [shinyapps](https://github.com/rstudio/shinyapps) R package
+- Application
+    - Application loggint: `shinyapps::showLogs()`
+    - Configuring applications: `shinyapps::configureApp(APPNAME,size="small")`
+    - Application authentication(目前只有付費才有此功能)
+    - Terminate an app: `terminateApp("<your app's name>")`
 
 
