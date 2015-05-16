@@ -308,9 +308,8 @@ out
 
 # 期末成發
 
-## shinyapps(v0.3.64)
+## [shinyapps(v0.3.64)](https://www.shinyapps.io/)
 
-- [www.shinyapps.io](https://www.shinyapps.io/)
 - [Getting started with shinyapps.io](http://shiny.rstudio.com/articles/shinyapps.html)
 - Platform as a service for hosting shiny web apps
     1. Windows users: Rtools  
