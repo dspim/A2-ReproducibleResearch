@@ -213,77 +213,112 @@ runExample("01_hello")
     + step3 檔案目錄代表app名稱    
 3. 已經建立好的apps(即目錄名稱): `runApp(app_name)`  
 
-## headPanel
+## Panel with input and output
 
-```{r headPanel}
-
+<div class="code_block">    
+```{r Panel}
+titlePanel(title="Hello Shiny")
+sidebarPanel(
+  sliderInput(inputId="bins",
+               label="Number of bins:",
+               min = 1,max = 50,value = 30))
+mainPanel(  plotOutput(outputId="distPlot"))
+output$distPlot <- renderPlot({
+  x    <- faithful[, 2]  # Old Faithful Geyser data
+  bins <- seq(min(x), max(x), length.out = input$bins + 1)
+  # draw the histogram with the specified number of bins
+  hist(x, breaks = bins, col = 'darkgray', border = 'white')
+})
 ```
+</div>
 
+## Panel to Page
 
 <div class="code_block">  
-```{r eval=FALSE}
-library(shiny)
+```{r echo=FALSE}
+shinyApp(
+  ui=fluidPage(
+    titlePanel("Hello Shiny!"),
+    sidebarLayout(
+      sidebarPanel(
+        sliderInput("bins","Number of bins:",
+                    min = 1,max = 50,value = 30)
+      ),
+      mainPanel(
+        plotOutput("distPlot")
+      )
+    )
+  ),
+  server=function(input, output) {
+    output$distPlot <- renderPlot({
+      x    <- faithful[, 2]  # Old Faithful Geyser data
+      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    })
+  },
+  options = list(height = 500)
+)
+```
 
+```{r eval=FALSE}
 ##############################
 ### Hello Shiny - ui.R #######
 ##############################
 library(shiny)
 
-# Define UI for application that plots random distributions 
-shinyUI(pageWithSidebar(
-  
+# Define UI for application that draws a histogram
+shinyUI(fluidPage(
+
   # Application title
-  headerPanel("Hello Shiny!"),
-  
-  # Sidebar with a slider input for number of observations
-  sidebarPanel(
-    sliderInput("obs", "Number of observations:", 
-                min = 0, max = 1000, value = 500)
-  ),
-  
-  # Show a plot of the generated distribution
-  mainPanel(
-    plotOutput("distPlot")
+  titlePanel("Hello Shiny!"),
+
+  # Sidebar with a slider input for the number of bins
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("bins",
+                  "Number of bins:",
+                  min = 1,
+                  max = 50,
+                  value = 30)
+    ),
+
+    # Show a plot of the generated distribution
+    mainPanel(
+      plotOutput("distPlot")
+    )
   )
 ))
-
 ##############################
 ### Hello Shiny - server.R ###
 ##############################
 library(shiny)
 
-# Define server logic required to generate and plot a random distribution
+# Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-    
-    # Expression that generates a plot of the distribution. The expression is
-    # wrapped in a call to renderPlot to indicate that:
-    # 
-    # 1) It is 'reactive' and therefore should be automatically re-executed
-    # when inputs change 2) Its output type is a plot
-    output$distPlot <- renderPlot({
-        
-        # generate an rnorm distribution and plot it
-        dist <- rnorm(input$obs)
-        hist(dist)
-    })
-})
 
+  # Expression that generates a histogram. The expression is
+  # wrapped in a call to renderPlot to indicate that:
+  #
+  #  1) It is "reactive" and therefore should be automatically
+  #     re-executed when inputs change
+  #  2) Its output type is a plot
+
+  output$distPlot <- renderPlot({
+    x    <- faithful[, 2]  # Old Faithful Geyser data
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  })
+
+})
 ```
 </div>
 
-## Shiny content
-
-那上面兩隻程式(`ui.R`,`server.R`)要放哪裡呢?  
-```{r}
-library(shiny)
-# other-examples
-dir(system.file("examples",package="shiny"))
-dir(system.file("examples/01_hello",package="shiny"))
-```
 
 ## 小挑戰1:自行撰寫app
 
-將Hello Shiny 改為自己的App，並改生成exponential分配之直方圖。  
+將Hello Shiny 改為自己的App，將資料改為用`ubike`並計算最大空位數(``)的直方圖。  
 
 > ~/myapp    \   
 > -- ui.R       <br />
@@ -293,9 +328,28 @@ dir(system.file("examples/01_hello",package="shiny"))
 - 確認工作環境 `getwd()`，有需要則設定工作環境`setwd(choose.dir())`  
 - 建立`myapp`目錄  
 - 利用上述 **Hello Shiny** 程式碼分別建立**ui.R**,**server.R**於**myapp**目錄下  
-- 將 `rnorm` 改為 `rexp`  
+- 將 `faithful[, 2]` 換成 `ubike[,'max.bemp']`
 - 建立完自行執行 `runApp(myApp)`  
 
+## Answer
+
+<div class="code_block">  
+```{r ubike_hist}
+load("data/ubikeweather_big5.rda")
+#titlePanel(title="Hello Shiny")
+sidebarPanel(
+  sliderInput(inputId="bins",
+               label="Number of bins:",
+               min = 1,max = 50,value = 30))
+mainPanel(  plotOutput(outputId="distPlot"))
+output$distPlot <- renderPlot({
+  x    <- ubike[, 'max.bemp']  # Old Faithful Geyser data
+  bins <- seq(min(x), max(x), length.out = input$bins + 1)
+  # draw the histogram with the specified number of bins
+  hist(x, breaks = bins, col = 'darkgray', border = 'white')
+})
+```
+</div>
 
 
 
