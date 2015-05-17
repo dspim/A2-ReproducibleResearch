@@ -417,6 +417,51 @@ function(input, output) {
 output$distPlot <- renderPlot({...})
 ```
 
+## Hello Shiny：renderPlot的運作原理
+
+- 最後必須要能輸出R 的圖形物件
+    - `hist(...)`
+- Reactive：Input導致Output有變動時，才會執行
+
+```r
+  output$distPlot <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    x    <- faithful[, 2]
+    bins <- seq(min(x), max(x), length.out = input$binss + 1)
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+```
+
+## 小挑戰 - 觀察Reactive和Input的關係
+
+- 繼續使用DSPShinyCourse
+- 修改`server.R`
+    - 在`output$distPlot`之中修改，變成：
+```r
+    x    <- faithful[, 2]
+    browser()
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+```
+- 執行，但是會中斷在`browser()`這行
+    - 按下c 繼續執行
+- 在UI上進行操作，改變Numbers of bins
+    - 是否每次改變都會中斷？
+    
+## 小挑戰 - 觀察Reactive和Input的關係
+
+- 修改`server.R`
+    - 在`output$distPlot`之中修改，變成：（renderPlot不再用到`input$bins`資訊）
+```r
+    x    <- faithful[, 2]
+    browser()
+    bins <- seq(min(x), max(x), length.out = 26)
+```
+- 執行，但是會中斷在`browser()`這行
+    - 按下c 繼續執行
+- 在UI上進行操作，改變Numbers of bins
+    - 是否每次改變都會中斷？
+
+
 ## Panel to Page
 
 <div class="code_block">  
