@@ -206,7 +206,8 @@ runExample("01_hello")
 ## 我們來看看預設的`ui.R`
 
 - `library(shiny)`載入shiny套件
-- `shinyUI`, `fluidPage`
+- `shinyUI`：它之中的物件都是shiny UI物件
+- `fluidPage`：整個瀏覽器頁面的容器
 - `titlePanel`、`sidebarPanel`和`mainPanel`
 
 ```{r Panel, eval = FALSE}
@@ -333,6 +334,8 @@ ERROR: /home/wush/Project/DSPShinyCourse/ui.R:28:7: unexpected symbol
 ```
 - 觀察`sliderInput`位置的改變
     - 理解兩種容器：`sidebarPanel`和`mainPanel`的位置與用途
+
+## Hello Shiny的`server.R`
 
 ## Panel to Page
 
