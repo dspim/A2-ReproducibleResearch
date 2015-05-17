@@ -370,6 +370,47 @@ function(input, output) {
   })
 }
 ```
+
+## 小挑戰 -- 理解input和ui.R之間的對應
+
+- 繼續使用DSPShinyCourse
+- 修改`ui.R`
+    - 將`sliderInput`的第一個參數從`"bins"`改成`"binss"`
+    - 存檔
+- 執行（Run App）
+    - 觀察頁面有無產生
+    - 觀察頁面上的錯誤
+
+## 小挑戰 -- 理解input和ui.R之間的對應，練習browser除錯技巧
+
+- 修改`server.R`
+    - 在`output$distPlot`之中插入一行程式碼，變成：
+```r
+    x    <- faithful[, 2]
+    browser()
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+```
+- 執行，但是會中斷在`browser()`這行
+    - 觀察頁面有無產生
+    - 觀察`input$bins`的值
+    - 直接跑`bins <- seq(min(x), max(x), length.out = input$bins + 1)`，觀察錯誤訊息
+
+## 小挑戰 -- 理解input和ui.R之間的對應
+
+- 修改`server.R`
+    - 移除`browser()`
+    - 將`sliderInput`的第一個參數從`"bins"`改成`"binss"`
+    - 存檔
+- 執行
+
+## Hello Shiny：建立Response物件
+
+- `output$distPlot`建立Response物件中的
+
+```r
+output$distPlot <- renderPlot({...})
+```
+
 ## Panel to Page
 
 <div class="code_block">  
