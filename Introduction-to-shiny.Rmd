@@ -108,7 +108,6 @@ mtcars %>%
 - 基本架構  
     - `ui.R`: 客戶端，負責前端使用者介面的呈現 
     - `server.R`: 伺服器端，負責後端資料處理與計算
-    - `global.R(optional)`: 放置ui與server共用的設定(`source`、`data`)
 
 <div class="columns-2">
   ![Image](img/interactive-1.png)
