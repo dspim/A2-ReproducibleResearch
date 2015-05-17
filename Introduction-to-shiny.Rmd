@@ -484,7 +484,7 @@ shinyServer(function(input, output){
 - 試問如果多次開啟browser有甚麼發現嗎?  
 
 **HINT** 可以嘗試如下列程式碼新增   
-```{r session_ex, eval=FASLE}
+```{r session_ex, eval=FALSE}
 library(shiny)
 layer1 <<- layer2 <<- layer3 <<- 0  ################################### 新增此行
 layer1 <<- layer1 + 1       ########################################### 新增此行
