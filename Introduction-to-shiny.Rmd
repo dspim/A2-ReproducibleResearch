@@ -191,7 +191,7 @@ renderPlot({
 
 - 依照前述的操作，建立一個Shiny App，名叫：DSPShinyCourse
 
-`HINT`
+**HINT**  
 ```
 從Rstudio建立shiny apps: 
     step1 Create Project   
@@ -456,7 +456,7 @@ output$distPlot <- renderPlot({...})
 
 ## Hello Shiny : `server.R`運作原理
 
-觀察`server.R`程式架構
+觀察`server.R`程式架構  
 - 最外層: 環境設定 -> 第一層:`function(input,output)` -> 第二層: `renderXXX`
 ```
 shinyServer <--- function(input,output)
@@ -466,7 +466,6 @@ shinyServer <--- function(input,output)
 ```{r evla=FALSE}
 library(shiny)
 #### 最外層位置: Run once #### 
-
 shinyServer(function(input, output){
   #### 第一層: Run by user ####
   output$distPlot <- renderPlot({
@@ -480,31 +479,33 @@ shinyServer(function(input, output){
 
 ## 小挑戰 6 -- 觀察session的運作
 
-- 利用global變數命名方法 `<<-` 來計算`server.R`的運作次數
-- 並透過`cat`將結果顯示出來
+- 利用global變數命名方法 `<<-` 來計算`server.R`的運作次數 
+- 並透過`cat`將結果顯示出來 
+- 試問如果多次開啟browser有甚麼發現嗎?  
 
-`HINT` 可以嘗試如下列程式碼新增
-```{r}
+**HINT** 可以嘗試如下列程式碼新增   
+```{r session_ex, eval=FASLE}
 library(shiny)
-layer1 <<- layer2 <<- layer3 <<- 0
-layer1 <<- layer1 + 1
+layer1 <<- layer2 <<- layer3 <<- 0  ################################### 新增此行
+layer1 <<- layer1 + 1       ########################################### 新增此行
 shinyServer(function(input, output){
-  layer2 <<- layer2 + 1
+  layer2 <<- layer2 + 1     ########################################### 新增此行
   output$distPlot <- renderPlot({
-    layer3 <<- layer3 + 1
+    layer3 <<- layer3 + 1   ########################################### 新增此行
     x    <- faithful[, 2]
     bins <- seq(min(x), max(x), length.out = input$bins + 1)
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    cat("layer1 = ",layer1,"layer2 = ",layer2,"layer3 =",layer3,"\n")
+    cat("layer1 = ",layer1,"layer2 = ",layer2,"layer3 =",layer3,"\n") # 新增此行
   })
 })
 ```
 
-- 試問如果多次開啟browser有甚麼發現嗎?
+
 
 ## Panel to Page
 
-如此一來就完成了 
+如此一來就完成了  
+
 <div class="code_block">  
 ```{r echo=FALSE}
 shinyApp(
@@ -538,59 +539,97 @@ shinyApp(
 
 讀取ubike資料檔案
 
-1. 
+1. 執行以下程式，`windows` 選 `ubikeweatherbig5.csv`, `Mac` 選 `ubikeweatherutf8.csv`
 
-```{r eval=FALSE}
+    ```{r eval=FALSE}
 library(data.table)
-ubike <- fread("data/ubikeweatherbig5.csv", 
-               showProgress = interactive(), data.table = FALSE)
-
+# ubike <- fread("data/ubikeweatherbig5.csv", showProgress = interactive(), data.table = FALSE)
+ubike <- fread(choose.files(), showProgress = interactive(), data.table = FALSE)
 ```
 
-2. 
+2. 將資料轉存成R資料檔案格式，並存在目錄`data`下面，`<file_name>.rda`檔，日後方便shiny app讀取
 
-- 
+```{r eval=FALSE}
+dir.create("data")
+save(ubike,file="data/ubikeweather.rda")
+```
 
 ## 小挑戰 7 -- 修改資料來源
 
-將Hello Shiny 改為自己的App，將資料改為用`ubike`並計算最大空位數(``)的直方圖。  
+將Hello Shiny改為自己的App，並將資料改為用`ubike`與計算最大空位數(``)的直方圖  
 
-> ~/myapp    \   
-> -- ui.R       <br />
-> -- server.R  \  
-
-`HINT`   
+**HINT**  
 - 確認工作環境 `getwd()`，有需要則設定工作環境`setwd(choose.dir())`  
-- 建立`myapp`目錄  
-- 利用上述 **Hello Shiny** 程式碼分別建立**ui.R**,**server.R**於**myapp**目錄下  
-- 將 `faithful[, 2]` 換成 `ubike[,'max.bemp']`
-- 建立完自行執行 `runApp(myApp)`  
+- 建立`DSPShinyCourse`目錄(小挑戰-1，已建立可省去)  
+- 利用上述 **Hello Shiny** 程式碼分別建立**ui.R**,**server.R**於**DSPShinyCourse**目錄下  
+- 讀取資料放置最外層`load("data/ubikeweather.rda")`    
+- 將 `faithful[, 2]` 換成 `ubike[,'max.bemp']`  
+- 建立完自行執行 `runApp("DSPShinyCourse")`   
 
 ## Answer
 
 <div class="code_block">  
-```{r ubike_hist}
-load("data/ubikeweather_big5.rda")
-#titlePanel(title="Hello Shiny")
-sidebarPanel(
-  sliderInput(inputId="bins",
-               label="Number of bins:",
-               min = 1,max = 50,value = 30))
-mainPanel(  plotOutput(outputId="distPlot"))
-output$distPlot <- renderPlot({
-  x    <- ubike[, 'max.bemp']  # Old Faithful Geyser data
-  bins <- seq(min(x), max(x), length.out = input$bins + 1)
-  # draw the histogram with the specified number of bins
-  hist(x, breaks = bins, col = 'darkgray', border = 'white')
+```{r ubike_hist_code,eval=FALSE}
+########
+# ui.R #
+########
+library(shiny)
+load("data/ubikeweather.rda") ########################## 新增此行
+shinyUI(fluidPage(
+  titlePanel(title="Hello Shiny"),
+  sidebarPanel(
+    sliderInput(inputId="bins",
+                 label="Number of bins:",
+                 min = 1,max = 50,value = 30)),
+  mainPanel(plotOutput(outputId="distPlot"))
+))
+############
+# server.R #
+############
+library(shiny)
+load("data/ubikeweather.rda") ########################## 新增此行
+shinyServer(function(input, output) { 
+  output$distPlot <- renderPlot({
+    x    <- ubike[, 'max.bemp']  ########################## 更改此行
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  })
 })
 ```
+
+```{r ubike_hist, echo=FALSE}
+load("data/ubikeweather.rda") ########################## 新增此行
+shinyApp(
+  ui=fluidPage(
+    titlePanel(title="Hello Shiny"),
+    sidebarPanel(
+      sliderInput(inputId="bins",label="Number of bins:",min = 1,max = 50,value = 30)),
+    mainPanel(  plotOutput(outputId="distPlot"))
+  ),
+  server=function(input, output) {
+    output$distPlot <- renderPlot({
+      x    <- ubike[, 'max.bemp']  ########################## 更改此行
+      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    })
+  },
+  options = list(height = 500)
+)
+```
+
 </div>
 
 ## 資料表呈現 -- dataTable
 
+## 小挑戰 8 --
+
 ## 繪製圖形 -- barplot
 
+## 小挑戰 9 --
+
 ## 整合頁面 -- navbarPage
+
+## 小挑戰 10 --
 
 
 
@@ -809,16 +848,6 @@ shinyServer(function(input, output, session) {
 
 </div>
 
-
-## Reactivity
-
-<div class="notes">
-This is my *note*.
-
-- It can contain markdown
-- like this list
-
-</div>
 
 
 # 其他整合應用
