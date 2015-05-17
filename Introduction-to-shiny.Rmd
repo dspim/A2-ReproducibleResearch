@@ -175,17 +175,6 @@ renderPlot({
 })
 ```
 
-## `server.R`
-
-- Environment Variable  
-    - 最外層 Run once: 讀套件、data  
-- `shinyServer()`
-    - 第一層 Function(), Run once per user
-        - input list, output list, session
-        - session: (補充說明?)
-    - 第二層 Render Function, Run often
-        - 建立輸出元件
-
 # Hello shiny
 
 ## 如何執行 shiny apps
