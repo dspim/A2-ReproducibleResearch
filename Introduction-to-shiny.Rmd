@@ -337,6 +337,39 @@ ERROR: /home/wush/Project/DSPShinyCourse/ui.R:28:7: unexpected symbol
 
 ## Hello Shiny的`server.R`
 
+- `library(shiny)`載入Shiny
+- `shinyServer`：定義伺服器端的邏輯
+- `function(input, output) {...}`:一段自Request產生Response的邏輯
+
+```{r server-r, echo = TRUE, eval = FALSE}
+library(shiny)
+shinyServer(function(input, output) {
+  output$distPlot <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    x    <- faithful[, 2]
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  })
+})
+```
+
+## Hello Shiny：伺服器端的邏輯
+
+- `input`：Request物件，攜帶所有在`ui.R`中`xxxInput`物件的值
+    - `input$bins`對應到`sliderInput(inputId="bins", ...)`
+- `output`：Response物件，輸出至`ui.R`中`xxxOutput`物件
+    `output$distPlot`會對應到`plotOutput(outputId="distPlot")`
+
+```r
+function(input, output) {
+  output$distPlot <- renderPlot({
+    ...
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    ...
+  })
+}
+```
 ## Panel to Page
 
 <div class="code_block">  
