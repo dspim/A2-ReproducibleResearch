@@ -175,15 +175,6 @@ renderPlot({
 })
 ```
 
-
-## `ui.R`  
-
-<div class="columns-2">
-  <img src="img/ui.R-new1.jpg" style='max-width: 100%;max-height:100%'>
-
-  <img src="img/ui.R-new2.jpg" style='max-width: 100%;max-height:100%'>
-</div>
-
 ## `server.R`
 
 - Environment Variable  
@@ -212,10 +203,11 @@ runExample("01_hello")
     + step3 檔案目錄代表app名稱    
 3. 已經建立好的apps(即目錄名稱): `runApp(app_name)`  
 
-## Panel with input and output
+## 我們來看看預設的`ui.R`
 
-<div class="code_block">    
-```{r Panel}
+- `titlePanel`、`sidebarPanel`和`mainPanel`
+
+```{r Panel, eval = FALSE}
 titlePanel(title="Hello Shiny")
 sidebarPanel(
   sliderInput(inputId="bins",
@@ -229,6 +221,13 @@ output$distPlot <- renderPlot({
   hist(x, breaks = bins, col = 'darkgray', border = 'white')
 })
 ```
+
+## 程式碼的物件如何呈現於瀏覽器中?
+
+<div class="columns-2">
+  <img src="img/ui.R-new1.jpg" style='max-width: 100%;max-height:100%'>
+
+  <img src="img/ui.R-new2.jpg" style='max-width: 100%;max-height:100%'>
 </div>
 
 ## Panel to Page
