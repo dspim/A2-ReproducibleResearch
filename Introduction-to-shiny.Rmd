@@ -252,7 +252,7 @@ print(fluidPage(titlePanel(title = "Test Title")))
 ## shiny UI物件的結構
 
 - shiny UI物件的結構，可以轉換為一個樹狀結構
-```{r ui-tree1, echo = TRUE, eval = FALSE, results='markup'}
+```{r ui-tree1-2, echo = TRUE, eval = FALSE, results='markup'}
 print(fluidPage(titlePanel(title = "Test Title")))
 ```
 
