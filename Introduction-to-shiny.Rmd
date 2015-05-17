@@ -319,6 +319,26 @@ titlePanel(title = "Test Title 2")
 - 修改`ui.R`中`titlePanel`的值
 - 點下Run App來看title是否有更動
 
+## 小挑戰 -- 更改結構
+
+- 繼續使用DSPShinyCourse
+- 修改`ui.R`
+    - 把整段`sliderInput`的程式碼從`sidebarPanel`剪下貼上到`mainPanel`之中
+    - 點下Run App
+- 如果對R 語言不是很熟悉的同學，可能會遇到以下錯誤：
+```
+ERROR: /home/wush/Project/DSPShinyCourse/ui.R:28:7: unexpected symbol
+27:                   value = 30)
+28:       plotOutput
+```
+- 觀察`sliderInput`位置的改變
+    - 理解兩種容器：`sidebarPanel`和`mainPanel`的位置與用途
+
+Tips: (Bonus) Rstudio 專案的切換
+
+- 我們可以透過Rstudio右上角的按鈕在不同專案間切換
+    - 如果詢問是否要`Save workspace`，建議都選No
+
 ## Panel to Page
 
 <div class="code_block">  
