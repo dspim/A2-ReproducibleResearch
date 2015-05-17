@@ -334,11 +334,6 @@ ERROR: /home/wush/Project/DSPShinyCourse/ui.R:28:7: unexpected symbol
 - 觀察`sliderInput`位置的改變
     - 理解兩種容器：`sidebarPanel`和`mainPanel`的位置與用途
 
-Tips: (Bonus) Rstudio 專案的切換
-
-- 我們可以透過Rstudio右上角的按鈕在不同專案間切換
-    - 如果詢問是否要`Save workspace`，建議都選No
-
 ## Panel to Page
 
 <div class="code_block">  
