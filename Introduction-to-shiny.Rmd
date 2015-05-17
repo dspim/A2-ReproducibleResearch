@@ -229,19 +229,19 @@ shinyUI(fluidPage(
   <img src="img/ui.R-new2.jpg" style='max-width: 100%;max-height:100%'>
 </div>
 
-## shiny物件的結構
+## shiny UI物件的結構
 
-- shiny的物件會轉換為HTML，而HTML是一個結構化語言
-- shiny物件的結構對應到HTML的結構
+- shiny UI物件會轉換為HTML，而HTML是一個結構化語言
+- shiny UI物件的結構對應到HTML的結構
 ```{r ui-R-structure, echo = TRUE, results='markup'}
 print(fluidPage())
 print(titlePanel(title = "Test Title"))
 print(fluidPage(titlePanel(title = "Test Title")))
 ```
 
-## shiny物件的結構
+## shiny UI物件的結構
 
-- shiny物件的結構，可以轉換為一個樹狀結構
+- shiny UI物件的結構，可以轉換為一個樹狀結構
 ```{r ui-tree1, echo = TRUE, eval = FALSE, results='markup'}
 print(fluidPage(titlePanel(title = "Test Title")))
 ```
