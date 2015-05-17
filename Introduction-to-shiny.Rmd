@@ -454,10 +454,53 @@ output$distPlot <- renderPlot({...})
 - 在UI上進行操作，改變Numbers of bins
     - 是否每次改變都會中斷？
 
-## Hello Shiny : 伺服器運作原理
+## Hello Shiny : `server.R`運作原理
 
-- 
+觀察`server.R`程式架構
+- 最外層: 環境設定 -> 第一層:`function(input,output)` -> 第二層: `renderXXX`
+```
+shinyServer <--- function(input,output)
+            |- output$<plotName> <--- renderPlot
+```
 
+```{r evla=FALSE}
+library(shiny)
+#### 最外層位置: Run once #### 
+
+shinyServer(function(input, output){
+  #### 第一層: Run by user ####
+  output$distPlot <- renderPlot({
+    #### 第二層: Run often ####
+    x    <- faithful[, 2]  # Old Faithful Geyser data
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  })
+})
+```
+
+## 小挑戰 6 -- 觀察session的運作
+
+- 利用global變數命名方法 `<<-` 來計算`server.R`的運作次數
+- 並透過`cat`將結果顯示出來
+
+`HINT` 可以嘗試如下列程式碼新增
+```{r}
+library(shiny)
+layer1 <<- layer2 <<- layer3 <<- 0
+layer1 <<- layer1 + 1
+shinyServer(function(input, output){
+  layer2 <<- layer2 + 1
+  output$distPlot <- renderPlot({
+    layer3 <<- layer3 + 1
+    x    <- faithful[, 2]
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    cat("layer1 = ",layer1,"layer2 = ",layer2,"layer3 =",layer3,"\n")
+  })
+})
+```
+
+- 試問如果多次開啟browser有甚麼發現嗎?
 
 ## Panel to Page
 
@@ -486,6 +529,7 @@ shinyApp(
   options = list(height = 500)
 )
 ```
+
 
 ```{r eval=FALSE}
 ##############################
