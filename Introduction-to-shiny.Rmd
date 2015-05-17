@@ -311,6 +311,14 @@ titlePanel(title = "Test Title 2")
     - `width`：寬度
     - `height`：高度
 
+## 小挑戰 -- 更改title
+
+- 依照講師前述的操作，建立一個Shiny App，名叫：DSPShinyCourse
+- 點下Run App來瀏覽Shiny Application
+- 關閉產生的視窗
+- 修改`ui.R`中`titlePanel`的值
+- 點下Run App來看title是否有更動
+
 ## Panel to Page
 
 <div class="code_block">  
