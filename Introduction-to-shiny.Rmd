@@ -181,16 +181,23 @@ renderPlot({
 
 學習shiny，先從範例模仿  
 
-1. 內建範例   
-    ```{r eval=FALSE}
-library(shiny)
-runExample("01_hello")
-```
-2. 從Rstudio建立shiny apps: 
+1. 從Rstudio建立shiny apps: 
     + step1 Create Project   
     + step2 選 Shiny Web Application   
     + step3 檔案目錄代表app名稱    
-3. 已經建立好的apps(即目錄名稱): `runApp(app_name)`  
+2. 已經建立好的apps(即目錄名稱): `runApp(app_name)`  
+
+## 小挑戰-1: Run App
+
+- 依照前述的操作，建立一個Shiny App，名叫：DSPShinyCourse
+
+`HINT`
+```
+從Rstudio建立shiny apps: 
+    step1 Create Project   
+    step2 選 Shiny Web Application   
+    step3 檔案目錄代表app名稱     
+```
 
 ## 我們來看看預設的`ui.R`
 
@@ -303,7 +310,6 @@ titlePanel(title = "Test Title 2")
 
 ## 小挑戰 -- 更改title
 
-- 依照講師前述的操作，建立一個Shiny App，名叫：DSPShinyCourse
 - 點下Run App來瀏覽Shiny Application
 - 關閉產生的視窗
 - 修改`ui.R`中`titlePanel`的值
