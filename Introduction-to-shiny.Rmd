@@ -187,7 +187,7 @@ renderPlot({
     + step3 檔案目錄代表app名稱    
 2. 已經建立好的apps(即目錄名稱): `runApp(app_name)`  
 
-## 小挑戰-1: Run App
+## 小挑戰 1 -- Run App
 
 - 依照前述的操作，建立一個Shiny App，名叫：DSPShinyCourse
 
@@ -226,7 +226,7 @@ shinyUI(fluidPage(
   <img src="img/ui.R-new2.jpg" style='max-width: 100%;max-height:100%'>
 </div>
 
-## shiny UI物件的結構
+## shiny UI物件的結構-1
 
 - shiny UI物件會轉換為HTML，而HTML是一個結構化語言
 - shiny UI物件的結構對應到HTML的結構
@@ -236,7 +236,7 @@ print(titlePanel(title = "Test Title"))
 print(fluidPage(titlePanel(title = "Test Title")))
 ```
 
-## shiny UI物件的結構
+## shiny UI物件的結構-2
 
 - 每個shiny UI的物件，是以一對`(`和`)`為單位
 ```{r ui-tree1, echo = TRUE, eval = FALSE, results='markup'}
@@ -246,7 +246,7 @@ print(fluidPage(titlePanel(title = "Test Title")))
 - `titlePanel(title = "Test Title")`
 - `fluidPage(titlePanel(...))`
 
-## shiny UI物件的結構
+## shiny UI物件的結構-3
 
 - shiny UI物件的結構，可以轉換為一個樹狀結構
 ```{r ui-tree1-2, echo = TRUE, eval = FALSE, results='markup'}
@@ -257,11 +257,9 @@ print(fluidPage(titlePanel(title = "Test Title")))
 fluidPage <-- titlePanel
 ```
 
-## shiny物件的結構
+## shiny UI物件的結構-4
 
-### 小挑戰
-
-請問預設ui.R中的結構為何?
+`小思考`:請問預設ui.R中的結構為何?
 
 ```{r ui-tree2, echo = TRUE, eval = FALSE}
 fluidPage(
@@ -308,14 +306,14 @@ titlePanel(title = "Test Title 2")
     - `width`：寬度
     - `height`：高度
 
-## 小挑戰 -- 更改title
+## 小挑戰 2 -- 更改title
 
 - 點下Run App來瀏覽Shiny Application
 - 關閉產生的視窗
 - 修改`ui.R`中`titlePanel`的值
 - 點下Run App來看title是否有更動
 
-## 小挑戰 -- 更改結構
+## 小挑戰 3 -- 更改結構
 
 - 繼續使用DSPShinyCourse
 - 修改`ui.R`
@@ -366,7 +364,7 @@ function(input, output) {
 }
 ```
 
-## 小挑戰 -- 理解input和ui.R之間的對應
+## 小挑戰 4-1 -- 理解input和ui.R之間的對應
 
 - 繼續使用DSPShinyCourse
 - 修改`ui.R`
@@ -376,7 +374,7 @@ function(input, output) {
     - 觀察頁面有無產生
     - 觀察頁面上的錯誤
 
-## 小挑戰 -- 理解input和ui.R之間的對應，練習browser除錯技巧
+## 小挑戰 4-2 -- 理解input和ui.R之間的對應，練習browser除錯技巧
 
 - 修改`server.R`
     - 在`output$distPlot`之中插入一行程式碼，變成：
@@ -390,7 +388,7 @@ function(input, output) {
     - 觀察`input$bins`的值
     - 直接跑`bins <- seq(min(x), max(x), length.out = input$bins + 1)`，觀察錯誤訊息
 
-## 小挑戰 -- 理解input和ui.R之間的對應
+## 小挑戰 4-3 -- 理解input和ui.R之間的對應
 
 - 修改`server.R`
     - 移除`browser()`
@@ -427,9 +425,9 @@ output$distPlot <- renderPlot({...})
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
 ```
 
-## 小挑戰 - 觀察Reactive和Input的關係
+## 小挑戰 5-1 -- 觀察Reactive和Input的關係
 
-- 繼續使用DSPShinyCourse
+- 繼續使用APP:DSPShinyCourse
 - 修改`server.R`
     - 在`output$distPlot`之中修改，變成：
 ```r
@@ -442,7 +440,7 @@ output$distPlot <- renderPlot({...})
 - 在UI上進行操作，改變Numbers of bins
     - 是否每次改變都會中斷？
     
-## 小挑戰 - 觀察Reactive和Input的關係
+## 小挑戰 5-2 - 觀察Reactive和Input的關係
 
 - 修改`server.R`
     - 在`output$distPlot`之中修改，變成：（renderPlot不再用到`input$bins`資訊）
@@ -455,6 +453,10 @@ output$distPlot <- renderPlot({...})
     - 按下c 繼續執行
 - 在UI上進行操作，改變Numbers of bins
     - 是否每次改變都會中斷？
+
+## Hello Shiny : 伺服器運作原理
+
+- 
 
 
 ## Panel to Page
