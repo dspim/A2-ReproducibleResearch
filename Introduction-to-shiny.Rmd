@@ -405,7 +405,13 @@ function(input, output) {
 
 ## Hello Shiny：建立Response物件
 
-- `output$distPlot`建立Response物件中的
+- `output$distPlot`建立Response物件中的`distPlot`
+    - `ui.R`中的`plotOutput("distPlot")`將`output$distPlot`呈現於瀏覽器之中
+- `renderXXX`會將`{...}`的結果轉換為Response物件
+    - `renderXXX`和`xxxOutput`必須有正確的對應：
+        - `renderPlot` <--> `plotOutput`
+        - `renderTable` <--> `tableOutput`或`dataTableOutput`
+        - `renderText` <--> `textOutput`
 
 ```r
 output$distPlot <- renderPlot({...})
