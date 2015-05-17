@@ -205,21 +205,26 @@ runExample("01_hello")
 
 ## 我們來看看預設的`ui.R`
 
+- `library(shiny)`載入shiny套件
+- `shinyUI`, `fluidPage`
 - `titlePanel`、`sidebarPanel`和`mainPanel`
 
 ```{r Panel, eval = FALSE}
-titlePanel(title="Hello Shiny")
-sidebarPanel(
-  sliderInput(inputId="bins",
-               label="Number of bins:",
-               min = 1,max = 50,value = 30))
-mainPanel(  plotOutput(outputId="distPlot"))
-output$distPlot <- renderPlot({
-  x    <- faithful[, 2]  # Old Faithful Geyser data
-  bins <- seq(min(x), max(x), length.out = input$bins + 1)
-  # draw the histogram with the specified number of bins
-  hist(x, breaks = bins, col = 'darkgray', border = 'white')
-})
+library(shiny)
+shinyUI(fluidPage(
+  titlePanel(title="Hello Shiny")
+  sidebarPanel(
+    sliderInput(inputId="bins",
+                 label="Number of bins:",
+                 min = 1,max = 50,value = 30))
+  mainPanel(  plotOutput(outputId="distPlot"))
+  output$distPlot <- renderPlot({
+    x    <- faithful[, 2]  # Old Faithful Geyser data
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  })
+))
 ```
 
 ## 程式碼的物件如何呈現於瀏覽器中?
