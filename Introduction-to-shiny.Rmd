@@ -210,7 +210,7 @@ runExample("01_hello")
 - `fluidPage`：整個瀏覽器頁面的容器
 - `titlePanel`、`sidebarPanel`和`mainPanel`
 
-```{r Panel, eval = FALSE}
+```{r ui-R, echo=TRUE, eval = FALSE}
 library(shiny)
 shinyUI(fluidPage(
   titlePanel(title="Hello Shiny")
@@ -218,7 +218,7 @@ shinyUI(fluidPage(
     sliderInput(inputId="bins",
                  label="Number of bins:",
                  min = 1,max = 50,value = 30))
-  mainPanel(  plotOutput(outputId="distPlot"))
+  mainPanel(plotOutput(outputId="distPlot"))
 ))
 ```
 
