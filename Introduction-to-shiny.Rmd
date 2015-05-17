@@ -269,6 +269,38 @@ fluidPage <--- titlePanel
             |- sidebarPanel <--- sliderInput
             |- mainPanel <--- plotOutput
 ```
+
+## shiny UI物件的參數
+
+- shiny UI物件的參數會影響到產生的HTML的語法，進而在瀏覽器造成不同的呈現結果
+```{r ui-param, echo = TRUE, results='markup'}
+titlePanel(title = "Test Title 1")
+titlePanel(title = "Test Title 2")
+```
+
+## Hello Shiny的`ui.R`中shiny物件的功能與常用參數
+
+- `titlePanel` 產生標題
+    - `title`：頁面的標題
+- `sidebarPanel` 頁面左區塊的容器
+    - 參數是其他shiny UI物件
+- `sliderInput` 使用者可以拉動的Bar
+    - `inputId`：產生的Request物件的欄位（和server.R有關）
+    - `label`：顯示在瀏覽器上的說明文字
+    - `min`：Bar的最小值
+    - `max`：Bar的最大值
+    - `value`：預設值
+    - `step`：使用者滑動Bar的最小單位（不給的話，Shiny會自動決定）
+    
+## Hello Shiny的`ui.R`中shiny物件的功能與常用參數
+
+- `mainPanel` 頁面右方區塊的容器
+    - 參數是其他shiny UI物件
+- `plotOutput` 呈現來自伺服器的圖形輸出
+    - `outputId`：對應的Response物件的欄位（和server.R有關）
+    - `width`：寬度
+    - `height`：高度
+
 ## Panel to Page
 
 <div class="code_block">  
