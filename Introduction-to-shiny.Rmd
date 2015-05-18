@@ -728,7 +728,54 @@ shinyApp(
 )
 ```
 
+## 動態圖形 
+
+```{r echo=FALSE}
+library(dplyr);library(ggplot2)
+shinyApp(
+  ui=fluidPage(
+    sidebarPanel(
+      selectInput(inputId='cut', label='cut', levels(diamonds$cut))
+      ),
+    mainPanel(plotOutput(outputId="plot1"))
+  ),
+  server = function(input, output){
+    selectedData <- reactive({
+      filter(diamonds,cut == input$cut)
+    })
+    output$plot1 <- renderPlot({
+      diamond.p <- ggplot(data = selectedData(), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+      diamond.p + geom_bar(stat="identity") + coord_flip()
+    })
+  },
+  options = list(height = 500)
+)
+```
+
 ## 繪製圖形 -- barplot
+
+- 資料部分可設計選取，並透過`geom_bar`繪製barplot
+
+<div class="columns-2">
+```{r barplot_code, warning=FALSE,eval=FALSE}
+library(ggplot2);library(dplyr)
+daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+daimonds.p + geom_bar(stat="identity") + coord_flip()
+```
+
+```{r barplot_result, warning=FALSE,echo=FALSE}
+library(ggplot2);library(dplyr)
+daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+daimonds.p + geom_bar(stat="identity") + coord_flip()
+```
+</div>
+
+## `server.R` 互動元件
+
+`reactive`: 最基礎的互動元件，其他如`renderPlot`、`renderDataTable`
+
+目標製作
+
 
 ## 小挑戰 9 -- barplot
 
@@ -756,7 +803,7 @@ shinyApp(
     output$plot1 <- renderPlot({
       diamond.p <- ggplot(data = selectedData(), 
                     aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
-      diamond.p + geom_bar(stat="identity", width=0.5) + coord_flip()
+      diamond.p + geom_bar(stat="identity") + coord_flip()
       # geom_text can't using chinese text
     })
     output$table <- renderDataTable(selectedData())
@@ -818,7 +865,7 @@ shinyServer(function(input, output, session) {
     output$plot1 <- renderPlot({
       bike.3p <- ggplot(data = selectedData(), 
                         aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
-      bike.3p + geom_bar(stat="identity", width=0.5) + coord_flip()
+      bike.3p + geom_bar(stat="identity") + coord_flip()
       # geom_text can't using chinese text
       })
     output$table <- renderDataTable(selectedData())  
@@ -859,6 +906,7 @@ runApp("apps/widgets",display.mode="showcase")
 
 ## Learn Widgets
 
+<div class="code_block">  
 ```{r, eval=FALSE}
 runApp("apps/widgets-examples",display.mode="showcase")
 ##############################
@@ -943,8 +991,8 @@ shinyServer(function(input, output) {
   })
 })
 ```
+</div>
 
-# I want learn more
 
 ## Layout
 
