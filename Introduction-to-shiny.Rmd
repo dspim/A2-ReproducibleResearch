@@ -187,7 +187,8 @@ renderPlot({
     + step1 Create Project   
     + step2 選 Shiny Web Application   
     + step3 檔案目錄代表app名稱    
-2. 已經建立好的apps(即目錄名稱): `runApp(app_name)`  
+2. 載入已建立好的apps(即目錄名稱)
+3. `runApp`  
 
 ## 小挑戰 1 -- Run App
 
