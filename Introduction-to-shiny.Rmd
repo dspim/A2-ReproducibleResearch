@@ -599,7 +599,8 @@ shinyServer(function(input, output) {
 ```
 
 ```{r ubike_hist, echo=FALSE}
-load("data/ubikeweather.rda") ########################## 新增此行
+load(normalizePath
+("data/ubikeweather_big5.rda")) ########################## 新增此行
 shinyApp(
   ui=fluidPage(
     titlePanel(title="Hello Shiny"),
@@ -710,7 +711,7 @@ shinyServer(function(input, output) {
 - 試作出ubike的dataTable，並將app取作`DSPShiny_dataTable`
 
 ```{r echo=FALSE}
-load("data/ubikeweather.rda") ########################## 新增此行
+load(normalizePath("data/ubikeweather_big5.rda")) ########################## 新增此行
 shinyApp(
   ui=fluidPage(
     titlePanel(title="Examples of DataTables"),
@@ -825,7 +826,7 @@ library(dplyr)
 shinyApp(
   ui=fluidPage(
     sidebarPanel(
-      selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea)),
+      selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea))
       ),
     mainPanel(plotOutput(outputId="plot1"))
   ),
