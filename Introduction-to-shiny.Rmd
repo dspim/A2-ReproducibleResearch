@@ -286,7 +286,7 @@ titlePanel(title = "Test Title 1")
 titlePanel(title = "Test Title 2")
 ```
 
-## Hello Shiny的`ui.R`中shiny物件的功能與常用參數
+## Hello Shiny的`ui.R`中shiny UI物件的功能與常用參數
 
 - `titlePanel` 產生標題
     - `title`：頁面的標題
