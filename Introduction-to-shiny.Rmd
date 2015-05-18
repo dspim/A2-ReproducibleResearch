@@ -482,7 +482,7 @@ shinyServer(function(input, output){
 
 ## 小挑戰 6 -- 觀察session的運作
 
-- 利用global變數命名方法 `<<-` 來計算`server.R`的運作次數 
+- 利用global變數和 `<<-` 來計算`server.R`的運作次數 
 - 並透過`cat`將結果顯示出來 
 - 試問如果多次開啟browser有甚麼發現嗎?  
 
