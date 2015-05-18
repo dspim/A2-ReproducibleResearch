@@ -91,6 +91,8 @@ mtcars %>%
 ```
 </div>
 
+# Shiny 概觀
+
 ## 網頁應用的運作原理 {.flexbox .vcenter}
 
 - 客戶端：
@@ -185,7 +187,8 @@ renderPlot({
     + step1 Create Project   
     + step2 選 Shiny Web Application   
     + step3 檔案目錄代表app名稱    
-2. 已經建立好的apps(即目錄名稱): `runApp(app_name)`  
+2. 載入已建立好的apps(即目錄名稱)
+3. `runApp`  
 
 ## 小挑戰 1 -- Run App
 
@@ -283,7 +286,7 @@ titlePanel(title = "Test Title 1")
 titlePanel(title = "Test Title 2")
 ```
 
-## Hello Shiny的`ui.R`中shiny物件的功能與常用參數
+## Hello Shiny的`ui.R`中shiny UI物件的功能與常用參數
 
 - `titlePanel` 產生標題
     - `title`：頁面的標題
@@ -479,7 +482,7 @@ shinyServer(function(input, output){
 
 ## 小挑戰 6 -- 觀察session的運作
 
-- 利用global變數命名方法 `<<-` 來計算`server.R`的運作次數 
+- 利用global變數和 `<<-` 來計算`server.R`的運作次數 
 - 並透過`cat`將結果顯示出來 
 - 試問如果多次開啟browser有甚麼發現嗎?  
 
@@ -531,7 +534,7 @@ shinyApp(
 ```
 </div>
 
-# 開始堆積木囉
+# 實務 Shiny 技巧
 
 ## 資料匯入
 
