@@ -728,7 +728,40 @@ shinyApp(
 )
 ```
 
-## 動態圖形 
+## Answer
+  
+<div class="code_block">
+```{r}
+##############
+# ui.R       #
+##############
+library(shiny)
+shinyUI(fluidPage(
+  titlePanel("Examples of DataTables"),
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput('show_vars', 'Columns in ubike to show:',
+                           names(ubike), selected = names(ubike))  #################新增此行
+    ),
+    mainPanel(
+      dataTableOutput('mytable')
+    )#mainPanel
+  )#sidebarLayout
+))#fluidPage,shinyUI
+##############
+# server.R   #
+##############
+library(shiny)
+shinyServer(function(input, output) {
+  # a large table, reative to input$show_vars
+  output$mytable <- renderDataTable({
+    diamonds[, input$show_vars, drop = FALSE]
+  })#renderDataTable
+})#function,shinyServer
+```
+</div>
+
+## 動態圖形 barplot
 
 ```{r echo=FALSE}
 library(dplyr);library(ggplot2)
@@ -754,9 +787,6 @@ shinyApp(
 
 ## 繪製圖形 -- barplot
 
-- 資料部分可設計選取，並透過`geom_bar`繪製barplot
-
-<div class="columns-2">
 ```{r barplot_code, warning=FALSE,eval=FALSE}
 library(ggplot2);library(dplyr)
 daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
@@ -768,20 +798,58 @@ library(ggplot2);library(dplyr)
 daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
 daimonds.p + geom_bar(stat="identity") + coord_flip()
 ```
-</div>
 
 ## `server.R` 互動元件
 
-`reactive`: 最基礎的互動元件，其他如`renderPlot`、`renderDataTable`
+- 資料部分可設計選取，並透過`geom_bar`繪製barplot
+- `reactive`: 最基礎的互動元件，其他如`renderPlot`、`renderDataTable`
 
-目標製作
+```{r}
+inputPanel(selectInput(inputId='cut', label='cut', levels(diamonds$cut)))
+selectData <- reactive(
+  head(diamonds[,cut == input$cut])
+  )
+renderTable(selectData)
+```
 
 
 ## 小挑戰 9 -- barplot
 
-## 整合頁面 -- navbarPage & navlistPanel
+試製作barplot互動圖形，並將資料換成ubike，選取的選單為行政區(`District`)
+
+```{r echo=FALSE}
+library(dplyr)
+shinyApp(
+  ui=fluidPage(
+    sidebarPanel(
+      selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea)),
+      ),
+    mainPanel(plotOutput(outputId="plot1"))
+  ),
+  server = function(input, output){
+    selectedData <- reactive({
+      filter(ubike,cut == input$cut)
+    })
+    output$plot1 <- renderPlot({
+      bike.p <- ggplot(data = selectedData(), 
+                       aes(x = reorder(sna, -avg.bemp), y = avg.bemp, colour = sna, fill = sna)) 
+      bike.p + geom_bar(stat="identity", width=0.5) + coord_flip()
+    })
+  },
+  options = list(height = 500)
+)
+```
+
+## Answer
 
 <div class="code_block">  
+```{r eval=FALSE}
+
+```
+
+</div>
+
+## 整合頁面 -- navbarPage & navlistPanel
 
 ```{r navlist, echo=FALSE, warning=FALSE}
 library(dplyr);library(ggplot2)
@@ -811,8 +879,6 @@ shinyApp(
   options = list(height = 500)
 )
 ```
-</div>
-
 
 ## 小挑戰 10 -- navbarPage
 
@@ -857,15 +923,15 @@ library(dplyr)
 # print(getwd())
 # load("../../data/ubikeweather_big5.rda")
 
-shinyServer(function(input, output, session) {
+shinyServer(function(input, output) {
    
     selectedData <- reactive({
       filter(diamonds,cut == input$cut)
     })
     output$plot1 <- renderPlot({
-      bike.3p <- ggplot(data = selectedData(), 
+      diamonds.p <- ggplot(data = selectedData(), 
                         aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
-      bike.3p + geom_bar(stat="identity") + coord_flip()
+      diamonds.p + geom_bar(stat="identity") + coord_flip()
       # geom_text can't using chinese text
       })
     output$table <- renderDataTable(selectedData())  
@@ -876,6 +942,9 @@ shinyServer(function(input, output, session) {
 </div>
 
 ## answer
+
+<div class="code_block">  
+</div>
 
 # 期末成發
 
