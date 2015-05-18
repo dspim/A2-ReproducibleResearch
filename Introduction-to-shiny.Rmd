@@ -500,8 +500,6 @@ shinyServer(function(input, output){
 })
 ```
 
-
-
 ## Panel to Page
 
 如此一來就完成了  
@@ -619,19 +617,238 @@ shinyApp(
 
 </div>
 
-## 資料表呈現 -- dataTable
+## 資料表呈現
 
-## 小挑戰 8 --
+- UI端: `renderTable` <--> Server端: `tableOutput`或`dataTableOutput`
+
+```{r diamonds_dataTable, echo=FALSE}
+library(shiny);library(ggplot2) # for the diamonds dataset
+shinyApp(
+  ui=fluidPage(
+    titlePanel(title="Examples of DataTables"),
+    sidebarPanel(
+      checkboxGroupInput('show_vars', 'Columns in diamonds to show:',
+                           names(diamonds), selected = names(diamonds))
+      ),
+    mainPanel(
+      dataTableOutput(outputId = 'mytable')
+      )
+  ),
+  server=function(input, output){
+    output$mytable <- renderDataTable({
+      diamonds[, input$show_vars, drop = FALSE]
+    })
+  },
+  options = list(height = 500)
+)
+
+```
+
+## UI checkbox
+
+勾選的tool bar
+
+<div class="code_block">  
+```{r ui1_checkbox}
+library(ggplot2)
+inputPanel(checkboxGroupInput(inputId = 'show_vars', 
+  label =' Columns in diamonds to show:',choices = names(diamonds), selected = names(diamonds)
+))
+```
+
+```{r ui2_checkbox,engine='R', results='markup'}
+library(ggplot2)
+print(inputPanel(checkboxGroupInput(inputId = 'show_vars', label =' Columns in diamonds to show:',
+                     choices = names(diamonds), selected = names(diamonds))
+))
+```
+</div>
+
+## dataTable code
+
+```r
+output$mytable <- renderDataTable({...})
+```
+
+<div class="code_block">  
+```{r eval=FALSE}
+##############
+# ui.R       #
+##############
+library(shiny);library(ggplot2)  # for the diamonds dataset
+
+shinyUI(fluidPage(
+  titlePanel("Examples of DataTables"),
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput('show_vars', 'Columns in diamonds to show:',
+                           names(diamonds), selected = names(diamonds))
+    ),
+    mainPanel(
+      dataTableOutput('mytable')
+    )#mainPanel
+  )#sidebarLayout
+))#fluidPage,shinyUI
+##############
+# server.R   #
+##############
+library(shiny);library(ggplot2)  # for the diamonds dataset
+shinyServer(function(input, output) {
+  # a large table, reative to input$show_vars
+  output$mytable <- renderDataTable({
+    diamonds[, input$show_vars, drop = FALSE]
+  })#renderDataTable
+})#function,shinyServer
+```
+</div>
+
+## 小挑戰 8 -- dataTable
+
+- 試作出ubike的dataTable，並將app取作`DSPShiny_dataTable`
+
+```{r echo=FALSE}
+load("data/ubikeweather.rda") ########################## 新增此行
+shinyApp(
+  ui=fluidPage(
+    titlePanel(title="Examples of DataTables"),
+    sidebarPanel(
+      checkboxGroupInput('show_vars', 'Columns in ubike to show:',
+                           names(ubike), selected = names(ubike))
+      ),
+    mainPanel(
+      dataTableOutput(outputId = 'mytable')
+      )
+  ),
+  server=function(input, output){
+    output$mytable <- renderDataTable({
+      ubike[, input$show_vars, drop = FALSE]
+    })
+  },
+  options = list(height = 500)
+)
+```
 
 ## 繪製圖形 -- barplot
 
-## 小挑戰 9 --
+## 小挑戰 9 -- barplot
 
-## 整合頁面 -- navbarPage
+## 整合頁面 -- navbarPage & navlistPanel
 
-## 小挑戰 10 --
+<div class="code_block">  
+
+```{r navlist, echo=FALSE, warning=FALSE}
+library(dplyr);library(ggplot2)
+shinyApp(
+  ui = navbarPage("NavbarPage Example",
+    tabPanel("Tab1",
+      titlePanel("Navlist Panel Example"),
+      selectInput(inputId='cut', label='cut', levels(diamonds$cut)), #字串可以用unique
+      navlistPanel("Header Name",
+               tabPanel("barplot",plotOutput('plot1')),
+               tabPanel("dataTable",dataTableOutput(outputId="table"))
+      )#navlistPanel
+    )#tabPanel:Tab1
+  ), #shinyUI,navarPage
+  server = function(input, output, session) {
+    selectedData <- reactive({
+      filter(diamonds,cut == input$cut)
+    })
+    output$plot1 <- renderPlot({
+      diamond.p <- ggplot(data = selectedData(), 
+                    aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+      diamond.p + geom_bar(stat="identity", width=0.5) + coord_flip()
+      # geom_text can't using chinese text
+    })
+    output$table <- renderDataTable(selectedData())
+  },
+  options = list(height = 500)
+)
+```
+</div>
 
 
+## 小挑戰 10 -- navbarPage
+
+Q: 練習將uike的兩個app，barplot與dataTable製作成同個頁面的navlistpanel
+
+<div class="code_block">  
+```{r eval=FALSE}
+runApp("apps/barplot")
+##########
+# ui.R   #
+##########
+library(shiny)
+library(ggplot2)
+library(dplyr)
+
+## 這裡可以讀資料(實際上不建議這樣寫)
+## the working directory is under your apps_names directory
+# print(getwd())
+# load("../../data/ubikeweather_big5.rda")
+
+shinyUI(navbarPage("",
+  titlePanel("Navlist panel example"),
+  
+  navlistPanel("header",
+               selectInput('cut', 'cut', levels(diamonds$cut)), #字串可以用unique
+               tabPanel("First",plotOutput('plot1')
+               ),
+               tabPanel("Second",
+                        dataTableOutput(outputId="table")
+               )
+  )
+))
+############
+# server.R #
+############
+library(shiny)
+library(ggplot2)
+library(dplyr)
+
+## 這裡可以讀資料(實際上不建議這樣寫)
+## the working directory is under your apps_names directory
+# print(getwd())
+# load("../../data/ubikeweather_big5.rda")
+
+shinyServer(function(input, output, session) {
+   
+    selectedData <- reactive({
+      filter(diamonds,cut == input$cut)
+    })
+    output$plot1 <- renderPlot({
+      bike.3p <- ggplot(data = selectedData(), 
+                        aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+      bike.3p + geom_bar(stat="identity", width=0.5) + coord_flip()
+      # geom_text can't using chinese text
+      })
+    output$table <- renderDataTable(selectedData())  
+   
+})
+```
+
+</div>
+
+## answer
+
+# 期末成發
+
+## [shinyapps(v0.3.64)](https://www.shinyapps.io/)
+
+- [Getting started with shinyapps.io](http://shiny.rstudio.com/articles/shinyapps.html)
+- Platform as a service for hosting shiny web apps
+    1. Windows users: Rtools  
+    2. Mac users: XCode Command Line Tools  
+    3. Linux users: GCC  
+- The latest version of the [shinyapps](https://github.com/rstudio/shinyapps) R package
+- Application
+    - Application loggint: `shinyapps::showLogs()`
+    - Configuring applications: `shinyapps::configureApp(APPNAME,size="small")`
+    - Application authentication(目前只有付費才有此功能)
+    - Terminate an app: `terminateApp("<your app's name>")`
+
+## 小挑戰11 -- 將最後的app放到shinyapps
+
+# Appendiex
 
 ## Widgets 工具大彙整
 
@@ -727,8 +944,6 @@ shinyServer(function(input, output) {
 })
 ```
 
-## 小挑戰2: (upload widgets)
-
 # I want learn more
 
 ## Layout
@@ -756,100 +971,6 @@ shinyServer(function(input, output) {
 
 <img src="img/Useful-Layout.png" style='max-width: 100%;max-height: 110%'>
 
-## navbarPage & navlistPanel
-
-```{r navlist, echo=FALSE}
-shinyApp(
-  ui = navbarPage("NavbarPage Example",
-    tabPanel("Tab1",
-      titlePanel("Navlist Panel Example"),
-      selectInput(inputId='cut', label='cut', levels(diamonds$cut)), #字串可以用unique
-      navlistPanel("Header Name",
-               tabPanel("barplot",plotOutput('plot1')),
-               tabPanel("dataTable",dataTableOutput(outputId="table"))
-      )#navlistPanel
-    )#tabPanel:Tab1
-  ), #shinyUI,navarPage
-  server = function(input, output, session) {
-    selectedData <- reactive({
-      filter(diamonds,cut == input$cut)
-    })
-    output$plot1 <- renderPlot({
-      diamond.p <- ggplot(data = selectedData(), 
-                    aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
-      diamond.p + geom_bar(stat="identity", width=0.5) + coord_flip()
-      # geom_text can't using chinese text
-    })
-    output$table <- renderDataTable(selectedData())
-  },
-  options = list(height = 500)
-)
-```
-
-</div>
-
-## 小挑戰-4 (with code example)
-
-Q: 練習將barplot與dataTable製作成同個頁面的navlistpanel
-<div class="code_block">  
-```{r eval=FALSE}
-runApp("apps/barplot")
-##########
-# ui.R   #
-##########
-library(shiny)
-library(ggplot2)
-library(dplyr)
-
-## 這裡可以讀資料(實際上不建議這樣寫)
-## the working directory is under your apps_names directory
-# print(getwd())
-# load("../../data/ubikeweather_big5.rda")
-
-shinyUI(navbarPage("",
-  titlePanel("Navlist panel example"),
-  
-  navlistPanel("header",
-               selectInput('cut', 'cut', levels(diamonds$cut)), #字串可以用unique
-               tabPanel("First",plotOutput('plot1')
-               ),
-               tabPanel("Second",
-                        dataTableOutput(outputId="table")
-               )
-  )
-))
-############
-# server.R #
-############
-library(shiny)
-library(ggplot2)
-library(dplyr)
-
-## 這裡可以讀資料(實際上不建議這樣寫)
-## the working directory is under your apps_names directory
-# print(getwd())
-# load("../../data/ubikeweather_big5.rda")
-
-shinyServer(function(input, output, session) {
-   
-    selectedData <- reactive({
-      filter(diamonds,cut == input$cut)
-    })
-    output$plot1 <- renderPlot({
-      bike.3p <- ggplot(data = selectedData(), 
-                        aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
-      bike.3p + geom_bar(stat="identity", width=0.5) + coord_flip()
-      # geom_text can't using chinese text
-      })
-    output$table <- renderDataTable(selectedData())  
-   
-})
-```
-
-</div>
-
-
-
 # 其他整合應用
 
 ## ggvis
@@ -874,19 +995,3 @@ out = mtcars %>%
 ```{r message=FALSE, echo=FALSE, fig.height=5, fig.width=8}
 out
 ```
-
-# 期末成發
-
-## [shinyapps(v0.3.64)](https://www.shinyapps.io/)
-
-- [Getting started with shinyapps.io](http://shiny.rstudio.com/articles/shinyapps.html)
-- Platform as a service for hosting shiny web apps
-    1. Windows users: Rtools  
-    2. Mac users: XCode Command Line Tools  
-    3. Linux users: GCC  
-- The latest version of the [shinyapps](https://github.com/rstudio/shinyapps) R package
-- Application
-    - Application loggint: `shinyapps::showLogs()`
-    - Configuring applications: `shinyapps::configureApp(APPNAME,size="small")`
-    - Application authentication(目前只有付費才有此功能)
-    - Terminate an app: `terminateApp("<your app's name>")`
