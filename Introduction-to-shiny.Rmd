@@ -406,7 +406,7 @@ function(input, output) {
 - `renderXXX`會將`{...}`的結果轉換為Response物件
     - `renderXXX`和`xxxOutput`必須有正確的對應：
         - `renderPlot` <--> `plotOutput`
-        - `renderTable` <--> `tableOutput`或`dataTableOutput`
+        - `renderTable`或 `renderDataTable` <--> `tableOutput`或`dataTableOutput`
         - `renderText` <--> `textOutput`
 
 ```r
@@ -540,19 +540,16 @@ shinyApp(
 
 讀取ubike資料檔案
 
-1. 執行以下程式，`windows` 選 `ubikeweatherbig5.csv`, `Mac` 選 `ubikeweatherutf8.csv`
+1. 下載以下資料檔
+    - `windows` 選 [`ubikeweather_big5.rda`](https://dl.dropboxusercontent.com/u/68133220/DSP/ubikeweather_big5.rda)
+    - `Mac` 選 [`ubikeweather_utf8.rda`](https://dl.dropboxusercontent.com/u/68133220/DSP/ubikeweather_utf8.rda)
 
-    ```{r eval=FALSE}
-library(data.table)
-# ubike <- fread("data/ubikeweatherbig5.csv", showProgress = interactive(), data.table = FALSE)
-ubike <- fread(choose.files(), showProgress = interactive(), data.table = FALSE)
-```
-
-2. 將資料轉存成R資料檔案格式，並存在目錄`data`下面，`<file_name>.rda`檔，日後方便shiny app讀取
+2. 將R資料檔案格式，存在目錄`data`下面，`<file_name>.rda`檔，日後方便shiny app讀取
 
 ```{r eval=FALSE}
 dir.create("data")
-save(ubike,file="data/ubikeweather.rda")
+if (.Platform$OS.type == "windows") load("data/ubikeweather_big5.rda") else
+  load("data/ubikeweather_utf8.rda")
 ```
 
 ## 小挑戰 7 -- 修改資料來源
@@ -560,12 +557,10 @@ save(ubike,file="data/ubikeweather.rda")
 將Hello Shiny改為自己的App，並將資料改為用`ubike`與計算最大空位數(``)的直方圖  
 
 **HINT**  
-- 確認工作環境 `getwd()`，有需要則設定工作環境`setwd(choose.dir())`  
-- 建立`DSPShinyCourse`目錄(小挑戰-1，已建立可省去)  
 - 利用上述 **Hello Shiny** 程式碼分別建立**ui.R**,**server.R**於**DSPShinyCourse**目錄下  
-- 讀取資料放置最外層`load("data/ubikeweather.rda")`    
+- 讀取資料放置最外層`load("data/ubikeweather_<utf8/big5>.rda")`    
 - 將 `faithful[, 2]` 換成 `ubike[,'max.bemp']`  
-- 建立完自行執行 `runApp("DSPShinyCourse")`   
+- 建立完後按下右上角，**Run App**
 
 ## Answer
 
@@ -575,7 +570,8 @@ save(ubike,file="data/ubikeweather.rda")
 # ui.R #
 ########
 library(shiny)
-load("data/ubikeweather.rda") ########################## 新增此行
+if (.Platform$OS.type == "windows") load("data/ubikeweather_big5.rda") else
+  load("data/ubikeweather_utf8.rda") ########################## 新增此行
 shinyUI(fluidPage(
   titlePanel(title="Hello Shiny"),
   sidebarPanel(
@@ -588,7 +584,8 @@ shinyUI(fluidPage(
 # server.R #
 ############
 library(shiny)
-load("data/ubikeweather.rda") ########################## 新增此行
+if (.Platform$OS.type == "windows") load("data/ubikeweather_big5.rda") else
+  load("data/ubikeweather_utf8.rda") ########################## 新增此行
 shinyServer(function(input, output) { 
   output$distPlot <- renderPlot({
     x    <- ubike[, 'max.bemp']  ########################## 更改此行
@@ -623,6 +620,7 @@ shinyApp(
 
 ## 資料表呈現
 
+- 資料採用`ggplot2`中`diamonds`作為範例
 - UI端: `renderTable` <--> Server端: `tableOutput`或`dataTableOutput`
 
 ```{r diamonds_dataTable, echo=FALSE}
@@ -650,37 +648,32 @@ shinyApp(
 
 ## UI checkbox
 
-勾選的tool bar
+- `checkboxGroupInput`:勾選的tool bar
+    - `choices`: 將選項列出來
+    - `selected`: 預先勾好的內容
 
 <div class="code_block">  
 ```{r ui1_checkbox}
 library(ggplot2)
-inputPanel(checkboxGroupInput(inputId = 'show_vars', 
-  label =' Columns in diamonds to show:',choices = names(diamonds), selected = names(diamonds)
-))
-```
-
-```{r ui2_checkbox,engine='R', results='markup'}
-library(ggplot2)
-print(inputPanel(checkboxGroupInput(inputId = 'show_vars', label =' Columns in diamonds to show:',
-                     choices = names(diamonds), selected = names(diamonds))
-))
+inputPanel(checkboxGroupInput(inputId = 'show_vars', label =' Columns in diamonds to show:',
+                              choices = names(diamonds), selected = names(diamonds)))
 ```
 </div>
 
 ## dataTable code
 
+- `ui.R` 需要有 `dataTableOutput` 將Table HTML語法抓出
+- `server.R` 需要有`renderDataTable` 將Table語法回傳
+- 資料採用`ggplot2`中`diamonds`作為範例
+
 ```r
+dataTableOutput(`mytable`)
 output$mytable <- renderDataTable({...})
 ```
-
 <div class="code_block">  
 ```{r eval=FALSE}
-##############
-# ui.R       #
-##############
-library(shiny);library(ggplot2)  # for the diamonds dataset
-
+#### ui.R ####################################
+library(shiny);library(ggplot2)
 shinyUI(fluidPage(
   titlePanel("Examples of DataTables"),
   sidebarLayout(
@@ -693,10 +686,8 @@ shinyUI(fluidPage(
     )#mainPanel
   )#sidebarLayout
 ))#fluidPage,shinyUI
-##############
-# server.R   #
-##############
-library(shiny);library(ggplot2)  # for the diamonds dataset
+#### server.R ###############################
+library(shiny);library(ggplot2)  
 shinyServer(function(input, output) {
   # a large table, reative to input$show_vars
   output$mytable <- renderDataTable({
@@ -732,29 +723,27 @@ shinyApp(
 )
 ```
 
-## Answer
+## Answer (`ui.R`)
   
-<div class="code_block">
-```{r}
-##############
-# ui.R       #
-##############
+```{r eval=FALSE}
 library(shiny)
 shinyUI(fluidPage(
   titlePanel("Examples of DataTables"),
   sidebarLayout(
     sidebarPanel(
       checkboxGroupInput('show_vars', 'Columns in ubike to show:',
-                           names(ubike), selected = names(ubike))  #################新增此行
+                           names(ubike), selected = names(ubike))  #########新增此行
     ),
     mainPanel(
       dataTableOutput('mytable')
     )#mainPanel
   )#sidebarLayout
 ))#fluidPage,shinyUI
-##############
-# server.R   #
-##############
+```
+
+## Answer (`server.R`)
+
+```{r eval=FALSE}
 library(shiny)
 shinyServer(function(input, output) {
   # a large table, reative to input$show_vars
@@ -762,8 +751,9 @@ shinyServer(function(input, output) {
     diamonds[, input$show_vars, drop = FALSE]
   })#renderDataTable
 })#function,shinyServer
+
 ```
-</div>
+
 
 ## 動態圖形 barplot
 
@@ -793,13 +783,15 @@ shinyApp(
 
 ```{r barplot_code, warning=FALSE,eval=FALSE}
 library(ggplot2);library(dplyr)
-daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), 
+                     aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
 daimonds.p + geom_bar(stat="identity") + coord_flip()
 ```
 
 ```{r barplot_result, warning=FALSE,echo=FALSE}
 library(ggplot2);library(dplyr)
-daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+daimonds.p <- ggplot(data = filter(diamonds,cut == "Premium"), 
+                     aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
 daimonds.p + geom_bar(stat="identity") + coord_flip()
 ```
 
