@@ -597,8 +597,8 @@ shinyServer(function(input, output) {
 ```
 
 ```{r ubike_hist, echo=FALSE}
-load(normalizePath
-("data/ubikeweather_big5.rda")) ########################## 新增此行
+if (.Platform$OS.type == "windows") load("data/ubikeweather_big5.rda") else
+  load("data/ubikeweather_utf8.rda")###### 新增此行
 shinyApp(
   ui=fluidPage(
     titlePanel(title="Hello Shiny"),
@@ -703,7 +703,8 @@ shinyServer(function(input, output) {
 - 試作出ubike的dataTable，並將app取作`DSPShiny_dataTable`
 
 ```{r echo=FALSE}
-load(normalizePath("data/ubikeweather_big5.rda")) ########################## 新增此行
+if (.Platform$OS.type == "windows") load("data/ubikeweather_big5.rda") else
+  load("data/ubikeweather_utf8.rda")###### 新增此行
 shinyApp(
   ui=fluidPage(
     titlePanel(title="Examples of DataTables"),
@@ -809,16 +810,18 @@ plotOutput      | renderPlot
 tableOutput     | renderTable
 dataTableOutput | renderDataTable
 
+<div class="code_block"> 
+
 ```{r}
 library(dplyr);library(ggplot2)
 inputPanel(selectInput(inputId='cut', label='cut', levels(diamonds$cut)))
 renderTable(head(filter(diamonds,cut == "Good")))
 ```
-
+</div>
 
 ## 小挑戰 9 -- barplot
 
-試製作barplot互動圖形，並將資料換成ubike，選取的選單為行政區(`District`)
+試製作barplot互動圖形，並將資料換成ubike，選取的選單為行政區(`sarea`)
 
 ```{r echo=FALSE}
 library(dplyr)
@@ -868,100 +871,214 @@ shinyServer(function(input, output) {
 })
 ```
 
-## 整合頁面 -- navbarPage & navlistPanel
+## 頁面整合 -- navbarPage + navlistPanel
 
+將各種結果放置sidebar區域點選 
+<div class="code_block">  
+```
+navbarPage <--- tabPaenl  
+           |- navlistPaenl <- tabPanel
+```
 ```{r navlist, echo=FALSE, warning=FALSE}
 library(dplyr);library(ggplot2)
 shinyApp(
-  ui = navbarPage("NavbarPage Example",
-    tabPanel("Tab1",
-      titlePanel("Navlist Panel Example"),
-      selectInput(inputId='cut', label='cut', levels(diamonds$cut)), #字串可以用unique
-      navlistPanel("Header Name",
-               tabPanel("barplot",plotOutput('plot1')),
-               tabPanel("dataTable",dataTableOutput(outputId="table"))
+  ui = navbarPage("NavbarPage Name",
+    tabPanel("TabPanel1",
+      titlePanel("DSPCourseShiny-1"),
+      #sidebarPanel(
+        selectInput(inputId='cut', label='cut', levels(diamonds$cut))
+      ,#  ),#sidebarPanel
+      navlistPanel("NavlistPanel Name",
+        tabPanel("barplot",plotOutput('plot1')),
+        tabPanel("dataTable",dataTableOutput(outputId="table"))
       )#navlistPanel
-    )#tabPanel:Tab1
-  ), #shinyUI,navarPage
-  server = function(input, output, session) {
-    selectedData <- reactive({
-      filter(diamonds,cut == input$cut)
-    })
+    ),#tabPanel:Tab1
+    tabPanel("TabPanel2")
+  ), #shinyUI,navbarPage
+  server = function(input, output) {
     output$plot1 <- renderPlot({
-      diamond.p <- ggplot(data = selectedData(), 
+      diamond.p <- ggplot(data = filter(diamonds,cut == input$cut), 
                     aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
       diamond.p + geom_bar(stat="identity") + coord_flip()
       # geom_text can't using chinese text
     })
-    output$table <- renderDataTable(selectedData())
+    output$table <- renderDataTable(filter(diamonds,cut == input$cut))
   },
   options = list(height = 500)
 )
 ```
+</div>
+
+## 頁面整合 navbarPage + tabsetPanel
+
+將結果放置在mainPanel中，點選tabs 
+<div class="code_block">  
+```
+navbarPage <--- tabPaenl  
+           |- tabsetPaenl <- tabPanel
+```
+```{r tabset, echo=FALSE, warning=FALSE}
+library(dplyr);library(ggplot2)
+shinyApp(
+  ui = navbarPage("NavbarPage Name",
+    tabPanel("TabPanel1",
+      titlePanel("DSPCourseShiny-1"),
+      sidebarLayout(
+        sidebarPanel(
+          selectInput(inputId='cut', label='cut', levels(diamonds$cut))
+          ),#sidebarPaenl
+        mainPanel(
+          tabsetPanel(
+            tabPanel("barplot",plotOutput('plot1')),
+            tabPanel("dataTable",dataTableOutput(outputId="table"))
+          )#tabsetPanel
+        )#mainPanel
+      )#sidebarLayout
+    ),#tabPanel:Tab1
+    tabPanel("TabPanel2")
+  ), #shinyUI,navarPage
+  server = function(input, output) {
+    output$plot1 <- renderPlot({
+      diamond.p <- ggplot(data = filter(diamonds,cut == input$cut), 
+                    aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+      diamond.p + geom_bar(stat="identity") + coord_flip()
+      # geom_text can't using chinese text
+    })
+    output$table <- renderDataTable(filter(diamonds,cut == input$cut))
+  },
+  options = list(height = 500)
+)
+```
+</div>
+
+
+## 當Panel 與 Page不夠用時的好選擇
+
+`xxxPanel(title,output)`: ex `navlistPanel("navlist",plotOutput())`
+
+- `navbarPage()`: 可以置放很多`tabPanel`在最上層(Top-Level)  
+- `navlistPanel()`: 可以置放很多`tabPanel`在左邊控制區域(sidebar)  
+- `tabsetPanel()`:  可以放置很多`tabPanle`在畫圖等呈現區域(mainPanel)  
+
+<div class="code_block">
+```{r navlistPanel_ex}
+navbarPage("NavbarPage Name",
+  tabPanel("TabPanel1",
+    selectInput(inputId='cut', label='cut', levels(diamonds$cut)),
+    navlistPanel("NavlistPanel Name",
+      tabPanel("component1"),
+      tabPanel("component2")
+    )#navlistPanel
+  ),#tabPanel:Tab1
+  tabPanel("TabPanel2")
+)#navbarPage
+```
+<br/>
+<br/>
+<br/><br/>
+</div>
+
+## 當Panel 與 Page不夠用時的好選擇
+
+- `navbarPage()`: 可以置放很多`tabPanel`在最上層(Top-Level)  
+- `navlistPanel()`: 可以置放很多`tabPanel`在左邊控制區域(sidebar)  
+- `tabsetPanel()`:  可以放置很多`tabPanle`在畫圖等呈現區域(mainPanel)
+
+<div class="code_block">
+```{r}
+navbarPage("NavbarPage Name",
+  tabPanel("TabPanel1",
+    sidebarLayout(
+      sidebarPanel(
+        selectInput(inputId='cut', label='cut', levels(diamonds$cut))
+      ),#sidebarPaenl
+      mainPanel(
+        tabsetPanel(
+          tabPanel("tab1"),
+          tabPanel("tab2")
+        )#tabsetPanel
+      )#mainPanel
+    )#sidebarLayout
+  ),#tabPanel:Tab1
+  tabPanel("TabPanel2")
+)#navbarPage
+```
+<br/>
+<br/>
+<br/>
+  <br/>
+</div>
 
 ## 小挑戰 10 -- navbarPage
 
-Q: 練習將uike的兩個app，barplot與dataTable製作成同個頁面的navlistpanel
+Q: 練習將uike的兩個app，barplot與dataTable製作成同個頁面navlistpanel的components
 
 <div class="code_block">  
-```{r eval=FALSE}
-runApp("apps/barplot")
-##########
-# ui.R   #
-##########
-library(shiny)
-library(ggplot2)
-library(dplyr)
-
-## 這裡可以讀資料(實際上不建議這樣寫)
-## the working directory is under your apps_names directory
-# print(getwd())
-# load("../../data/ubikeweather_big5.rda")
-
-shinyUI(navbarPage("",
-  titlePanel("Navlist panel example"),
-  
-  navlistPanel("header",
-               selectInput('cut', 'cut', levels(diamonds$cut)), #字串可以用unique
-               tabPanel("First",plotOutput('plot1')
-               ),
-               tabPanel("Second",
-                        dataTableOutput(outputId="table")
-               )
-  )
-))
-############
-# server.R #
-############
-library(shiny)
-library(ggplot2)
-library(dplyr)
-
-## 這裡可以讀資料(實際上不建議這樣寫)
-## the working directory is under your apps_names directory
-# print(getwd())
-# load("../../data/ubikeweather_big5.rda")
-
-shinyServer(function(input, output) {
-   
-    selectedData <- reactive({
-      filter(diamonds,cut == input$cut)
-    })
+```{r echo=FALSE}
+library(dplyr);library(ggplot2)
+shinyApp(
+  ui = navbarPage("NavbarPage Name",
+    tabPanel("TabPanel1",
+      titlePanel("DSPCourseShiny-1"),
+      #sidebarPanel(
+        selectInput(inputId='cut', label='cut', levels(diamonds$cut))
+      ,#  ),#sidebarPanel
+      navlistPanel("NavlistPanel Name",
+        tabPanel("barplot",plotOutput('plot1')),
+        tabPanel("dataTable",dataTableOutput(outputId="table"))
+      )#navlistPanel
+    ),#tabPanel:Tab1
+    tabPanel("TabPanel2")
+  ), #shinyUI,navbarPage
+  server = function(input, output) {
     output$plot1 <- renderPlot({
-      d.p <- ggplot(data = selectedData(), aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
-      d.p + geom_bar(stat="identity") + coord_flip()
+      diamond.p <- ggplot(data = filter(diamonds,cut == input$cut), 
+                    aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
+      diamond.p + geom_bar(stat="identity") + coord_flip()
       # geom_text can't using chinese text
-      })
-    output$table <- renderDataTable(selectedData())  
-   
-})
+    })
+    output$table <- renderDataTable(filter(diamonds,cut == input$cut))
+  },
+  options = list(height = 500)
+)
+
 ```
 
 </div>
 
-## answer
+## answer (ui.R)
 
 <div class="code_block">  
+```{r eval=FALSE}
+library(shiny);library(ggplot2);library(dplyr)
+load("../../data/ubikeweather_big5.rda")
+shinyUI(navbarPage("",
+  titlePanel("Navlist panel example"),
+  navlistPanel("header",
+     selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea))
+      tabPanel("First",plotOutput('plot1')),
+      tabPanel("Second",dataTableOutput(outputId="table"))
+  )
+))
+```
+
+</div>
+
+## answer (server.R)
+
+<div class="colde-block>
+```{r eval=FALSE}
+library(shiny);library(ggplot2);library(dplyr)
+load("../../data/ubikeweather_big5.rda")
+shinyServer(function(input, output) {
+    output$plot1 <- renderPlot({
+      bike.p <- ggplot(data = filter(ubike, sarea == input$District), 
+                     aes(x = reorder(sna, -avg.bemp), y = avg.bemp, colour = sna, fill = sna))
+    bike.p + geom_bar(stat="identity") + coord_flip()
+      })
+    output$table <- renderDataTable(filter(ubike, sarea == input$District))  
+})
+```
 </div>
 
 # 期末成發
