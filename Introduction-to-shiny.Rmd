@@ -1013,16 +1013,14 @@ navbarPage("NavbarPage Name",
 
 Q: 練習將uike的兩個app，barplot與dataTable製作成同個頁面navlistpanel的components
 
-<div class="code_block">  
+
 ```{r echo=FALSE}
 library(dplyr);library(ggplot2)
 shinyApp(
   ui = navbarPage("NavbarPage Name",
     tabPanel("TabPanel1",
       titlePanel("DSPCourseShiny-1"),
-      #sidebarPanel(
-        selectInput(inputId='cut', label='cut', levels(diamonds$cut))
-      ,#  ),#sidebarPanel
+        selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea)),
       navlistPanel("NavlistPanel Name",
         tabPanel("barplot",plotOutput('plot1')),
         tabPanel("dataTable",dataTableOutput(outputId="table"))
@@ -1032,19 +1030,17 @@ shinyApp(
   ), #shinyUI,navbarPage
   server = function(input, output) {
     output$plot1 <- renderPlot({
-      diamond.p <- ggplot(data = filter(diamonds,cut == input$cut), 
-                    aes(x = reorder(clarity, -price), y = price, colour = clarity, fill = clarity)) 
-      diamond.p + geom_bar(stat="identity") + coord_flip()
-      # geom_text can't using chinese text
+      bike.p <- ggplot(data = filter(ubike, sarea == input$District), 
+                     aes(x = reorder(sna, -avg.bemp), y = avg.bemp, colour = sna, fill = sna))
+    bike.p + geom_bar(stat="identity") + coord_flip()
     })
-    output$table <- renderDataTable(filter(diamonds,cut == input$cut))
+    output$table <- renderDataTable(filter(ubike, sarea == input$District))
   },
   options = list(height = 500)
 )
 
 ```
 
-</div>
 
 ## answer (ui.R)
 
@@ -1080,6 +1076,7 @@ shinyServer(function(input, output) {
 })
 ```
 </div>
+
 
 # 期末成發
 
@@ -1223,27 +1220,3 @@ shinyServer(function(input, output) {
 
 <img src="img/Useful-Layout.png" style='max-width: 100%;max-height: 110%'>
 
-# 其他整合應用
-
-## ggvis
-
-- 2014年中才放在CRAN的套件，持續成長中
-- 使用pipe，語法類似plot
-- 部分功能如tooltip需搭配shiny server才能使用
-- SVG
-
-```{r message=FALSE, echo=TRUE, warning=FALSE}
-library(knitr)
-library(ggvis)
-out = mtcars %>%
-    ggvis(x = ~wt, y = ~mpg) %>%
-    layer_smooths(se=TRUE, opacity := 0.5, opacity.hover := 0.75) %>% 
-    layer_points(fill = ~factor(cyl), size := 50, size.hover := 200) %>%
-    set_options(hover_duration = 250) 
-```
-
-## ggvis
-
-```{r message=FALSE, echo=FALSE, fig.height=5, fig.width=8}
-out
-```
