@@ -952,6 +952,11 @@ shinyApp(
 </div>
 
 
+## Useful Layout {.flexbox .vcenter}
+
+<img src="img/Useful-Layout.png" style='max-width: 100%;max-height: 110%'>
+
+
 ## 當Panel 與 Page不夠用時的好選擇
 
 `xxxPanel(title,output)`: ex `navlistPanel("navlist",plotOutput())`
@@ -1216,7 +1221,4 @@ shinyServer(function(input, output) {
 <img src="img/Responsive-Layout.png" style='max-width: 140%;max-height:60%'>
 [Responsive Layout](http://goo.gl/x7fh2U)
 
-## Useful Layout {.flexbox .vcenter}
-
-<img src="img/Useful-Layout.png" style='max-width: 100%;max-height: 110%'>
 
