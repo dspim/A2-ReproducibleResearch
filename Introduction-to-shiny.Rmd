@@ -824,11 +824,11 @@ renderTable(head(filter(diamonds,cut == "Good")))
 試製作barplot互動圖形，並將資料換成ubike，選取的選單為行政區(`sarea`)
 
 ```{r echo=FALSE}
-library(dplyr)
+library(dplyr) 
 shinyApp(
   ui=fluidPage(
     sidebarPanel(
-      selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea))
+      selectInput(inputId='District', label='district', choices=unique(ubike$sarea)) #選我選我-行政區 中文要deploy額外處李
       ),
     mainPanel(plotOutput(outputId="plot1"))
   ),
@@ -851,7 +851,7 @@ load("../../data/ubikeweather_big5.rda")
 shinyUI(fluidPage(
     titlePanel("barplot Example"),
     sidebarPanel(
-      selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea))
+      selectInput(inputId='District', label='district', choices=unique(ubike$sarea))
       ),
     mainPanel(plotOutput(outputId="plot1"))
 ))
@@ -1025,7 +1025,7 @@ shinyApp(
   ui = navbarPage("NavbarPage Name",
     tabPanel("TabPanel1",
       titlePanel("DSPCourseShiny-1"),
-        selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea)),
+        selectInput(inputId='District', label='district', choices=unique(ubike$sarea)),
       navlistPanel("NavlistPanel Name",
         tabPanel("barplot",plotOutput('plot1')),
         tabPanel("dataTable",dataTableOutput(outputId="table"))
@@ -1056,7 +1056,7 @@ load("../../data/ubikeweather_big5.rda")
 shinyUI(navbarPage("",
   titlePanel("Navlist panel example"),
   navlistPanel("header",
-     selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea))
+     selectInput(inputId='District', label='district', choices=unique(ubike$sarea))
       tabPanel("First",plotOutput('plot1')),
       tabPanel("Second",dataTableOutput(outputId="table"))
   )
@@ -1099,106 +1099,22 @@ shinyServer(function(input, output) {
     - Application authentication(目前只有付費才有此功能)
     - Terminate an app: `terminateApp("<your app's name>")`
 
+## deploy shinyapps
+
+1. Login
+2. get token: `setAccountInto(name,token,secret)`
+3. `deployApp(appDir="appdir_name",)`
+
 ## 小挑戰11 -- 將最後的app放到shinyapps
 
+Windows 需要較多更動
+- 檔案放致在apps下面，與`ui.R`、`server.R`同目錄下
+- 將`load("ubikeweather_big5.rda")` 改成`load("ubikeweather_utf8.rda")`
+- download `global.R` for 編碼支援
+- 程式內部除了註解不能放有中文字內容
+- 此部分所需時間較久，需要上傳資料與檔案，上課操作時流量網路注意
+
 # Appendiex
-
-## Widgets 工具大彙整
-
-- [source code](https://dl.dropboxusercontent.com/u/68133220/DSP/app_widgets.rar)
-```{r, eval=FALSE}
-runApp("apps/widgets",display.mode="showcase")
-```
-
-## Learn Widgets
-
-<div class="code_block">  
-```{r, eval=FALSE}
-runApp("apps/widgets-examples",display.mode="showcase")
-##############################
-### data Types - ui.R ########
-##############################
-library(shiny)  
-
-shinyUI(pageWithSidebar( 
-  
-  headerPanel("Widget values and data types"), 
-  
-  sidebarPanel(
-    
-    checkboxGroupInput(inputId = "checkGroup",
-                       label = "1. checkboxGroupInput",
-                       choices = list("Ice cream" = "IC", "Trifle" = "Trifle",
-                                      "Pistachios" = "Pist")),
-    
-    checkboxInput(inputId = "boxInput",
-                  label = "2. checkboxInput"),
-    
-    dateInput(inputId = "theDate",
-              label = "3. dateInput"),
-    
-    dateRangeInput(inputId = "dateRange",
-                   label = "4. dateRangeInput"),
-    
-    numericInput(inputId = "pickNumber",
-                 label = "5. numericInput",
-                 min = 1, max = 10, value = 1),
-    
-    radioButtons(inputId = "pickRadio",
-                 label = "6. radioButtons",
-                 choices = list("Taxi" = "Taxi", "Take a walk" = "Walk")),
-    
-    selectInput(inputId = "comboBox",
-                label = "7. selectInput",
-                choices = list("News" = "News", "Situation comedy" = "Sitcom", "Film" = "Film")),
-    
-    sliderInput(inputId = "slider",
-                label = "8. sliderInput",
-                min = 1, max = 10, value = 7, step = 1),
-    
-    textInput(inputId = "comment",
-              label = "9. textInput",
-              value = "")
-    
-  ),
-  
-  mainPanel( 
-    h3("Output and data type"),
-    tableOutput("textDisplay")
-  )
-))
-
-##########################################
-##### data types and values - server.R ###
-##########################################
-library(shiny)
- 
-shinyServer(function(input, output) { 
-  
-  output$textDisplay <- renderTable({ 
-                                     
-    getMat = matrix(c(paste(input$checkGroup, collapse=','), class(input$checkGroup),
-                      input$boxInput, class(input$boxInput),
-                      as.character(as.Date(input$theDate, origin = "1970-01-01")), class(input$theDate),
-                      paste(as.character(as.Date(input$dateRange[1], origin = "1970-01-01")),
-                            as.character(as.Date(input$dateRange[2], origin = "1970-01-01")), collapse = ','),
-                            class(input$dateRange),
-                      input$pickNumber, class(input$pickNumber),
-                      input$pickRadio, class(input$pickRadio),
-                      input$comboBox, class(input$comboBox),
-                      input$slider, class(input$slider),
-                      input$comment, class(input$comment)
-                      ), ncol=2, byrow = TRUE)
- 
-    colnames(getMat) = c("Value", "Class")
-    
-    getMat
- 
-  })
-})
-```
-</div>
-
 
 ## Layout
 

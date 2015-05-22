@@ -5,12 +5,12 @@ library(dplyr)
 ## 方便讀檔案，不建議這樣寫
 ## the working directory is under your apps_names directory
 # print(getwd())
-load("../../data/ubikeweather_big5.rda")
+load("ubikeweather_utf8.rda")
 
 shinyUI(navbarPage("NavbarPage Example",
-  tabPanel("行政區",
+  tabPanel("District(sarena)",
     titlePanel("Navlist Panel Example"),
-    selectInput(inputId='District', label='選我選我-行政區', choices=unique(ubike$sarea)),
+    selectInput(inputId='District', label='district', choices=unique(ubike$sarea)),
     navlistPanel("Header Name",
                tabPanel("FirstTab:barplot",plotOutput('plot1')
                ),

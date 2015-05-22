@@ -9,7 +9,7 @@ library(dplyr)
 
 ## the working directory is under your apps_names directory
 # print(getwd())
-load("../../data/ubikeweather_big5.rda")
+load("ubikeweather_utf8.rda")
 ## sbi:車輛數, bemp:空位數, max.anemo:最大風速
 
 shinyServer(function(input, output, session) { 
