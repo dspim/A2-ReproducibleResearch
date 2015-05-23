@@ -7,12 +7,12 @@ output:
     css: css/dsp.css
     # logo: assets/img/Taiwan-R-logo.png
     widescreen: yes
-#subtitle: shiny
-#runtime: shiny
+subtitle: shiny
+runtime: shiny
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(comment="", message=FALSE, warning=FALSE,eval=FALSE)
+knitr::opts_chunk$set(comment="", message=FALSE, warning=FALSE) #mark subtitle,runtime and add eval=FALSE
 library(knitr)
 library(shiny)
 library(rmarkdown)
