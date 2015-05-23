@@ -20,6 +20,27 @@ library(ggplot2)
 library(ggvis)
 ```
 
+## About Me
+
+<h3>George Chao</h3>
+
+<div class="columns-2">
+<ul>
+  <li>清大統計所畢業</li>
+  <li>現任職於: 資料分析相關產品顧問
+    <li>巨量資料分析平台、視覺化工具、資料倉儲</li>
+  </li>
+  <li>Taiwan R User Group 工作人員</li>
+  <li>相關產業經驗: 遊戲、EC、科技業</li>
+</ul>
+</br>
+</br>
+</br>
+</br>
+
+<img src="img/george.jpg" width="400px">
+</div>
+
 # 傢俬準備好
 
 <img src="img/dsp-page.png" style="display:none"/>
