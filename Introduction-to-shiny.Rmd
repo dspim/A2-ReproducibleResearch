@@ -1135,7 +1135,7 @@ Windows 需要較多更動，Mac與Linux只要資料位置正確即可直接depl
 
 1. 檔案放致在apps下面，與`ui.R`、`server.R`同目錄下   
 2. 將`load("ubikeweather_big5.rda")` 改成`load("ubikeweather_utf8.rda")`   
-3. download [global.R](https://dl.dropboxusercontent.com/u/68133220/DSP/global.R) for 編碼支援  
+3. download [global.R](https://raw.githubusercontent.com/dspim/A2-ReproducibleResearch/master/apps/navbarPage/global.R) for 編碼支援  
 4. 程式內部除了註解不能放有中文字內容   
 5. 此部分所需時間較久，需要上傳資料與檔案，上課操作時網路流量要注意   
 
