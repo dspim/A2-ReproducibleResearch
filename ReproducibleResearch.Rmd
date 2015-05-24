@@ -1,11 +1,10 @@
 ---
-title: "Introduction to Shiny"
+title: "Reproducible Research"
 author: "George & Wush"
 date: '`r Sys.Date()`'
 output:
   ioslides_presentation:
     css: css/dsp.css
-    # logo: assets/img/Taiwan-R-logo.png
     widescreen: yes
 subtitle: shiny
 runtime: shiny
@@ -18,27 +17,35 @@ library(shiny)
 library(rmarkdown)
 library(ggplot2)
 library(ggvis)
+if (!file.exists("data/ubikeweather_utf8.rda")) {
+  load("data/ubikeweather_big5.rda")
+  for(i in seq_len(ncol(ubike))) {
+    if (class(ubike[[i]]) != "character") next
+    ubike[[i]] <- iconv(ubike[[i]], from = "BIG-5", to = "UTF-8")
+  }
+  save(list = "ubike", file = "data/ubikeweather_utf8.rda")
+  rm(list = "ubike")
+}
 ```
 
 ## About Me
 
-<h3>George Chao</h3>
+<h3>Wush Wu</h3>
 
 <div class="columns-2">
-<ul>
-  <li>清大統計所畢業</li>
-  <li>現任職於: 資料分析相關產品顧問
-    <li>巨量資料分析平台、視覺化工具、資料倉儲</li>
-  </li>
-  <li>Taiwan R User Group 工作人員</li>
-  <li>相關產業經驗: 遊戲、EC、科技業</li>
-</ul>
+
+- 台大電機博士生
+    - 研究網路廣告即時競標平台(RTB)上的問題
+    - 撰寫與維護商業用網路廣告推薦引擎（酷比廣告）
+- Taiwan R User Group 的共同創辦人
+    - 曾貢獻過多個R 語言套件，包含今天會用到的`knitr`
+
 </br>
 </br>
 </br>
 </br>
 
-<img src="img/george.jpg" width="400px">
+<img src="img/wush.jpg" width="400px">
 </div>
 
 # 傢俬準備好
@@ -49,13 +56,71 @@ library(ggvis)
 ## 環境安裝 {.flexbox .vcenter}
 
 R 套件安裝
+
 ```{r Surround, eval=FALSE}
-install.packages(c("dplyr","ggplot2","shiny","devtools"))
+install.packages(c("dplyr","ggplot2","shiny","devtools", "rmarkdown"))
 devtools::install_github('rstudio/shinyapps')
 ```
-```{r echo=FALSE,eval=FALSE}
-sessionInfo()
-```
+
+# 如何輸出R 的統計分析結果
+
+## 傳統統計報表製作方式 {.flexbox .vcenter}
+
+- 使用Excel 或其他工具匯入資料至SAS 、SPSS或R 等分析工具
+- 運用分析工具產生分析結果
+- 運用滑鼠點點貼貼，將輸出結果複製到Word或其他文件製作工具
+    - 可以運用VBA 自動產生報表
+- 運用Tableau互動式的檢視資料
+
+## R 語言是一個一般性語言工具 {.flexbox .vcenter}
+
+- 富有驚人的彈性，能撰寫出千變萬化的功能
+- 針對數據分析的需求，延生出大量的套件
+- 在2012年左右，謝益輝博士運用[knitr](http://yihui.name/knitr/)解決輸出報表工具的問題
+- 在2015年的今天，學習一個R 語言：
+    - 爬資料，例如：[DataTaipei](https://github.com/TaipeiRHackers/DataTaipei)
+    - 資料的載入、資料的整理：[dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)
+    - 資料的分析與視覺化：[ggplot2](http://cran.r-project.org/web/packages/ggplot2/index.html)
+    - 報表的製作：[rmarkdown](http://rmarkdown.rstudio.com/)
+    - 動態圖表的建置：[shiny](http://shiny.rstudio.com/)
+
+## 跟著時代的潮流走 {.flexbox .vcenter}
+
+![](r-python-other-switch.jpg)
+
+出處：<http://www.kdnuggets.com/2015/05/r-vs-python-meetup-report.html>
+
+# rmarkdown
+
+## 內建整合至Rstudio的文件撰寫模組 {.flexbox .vcenter}
+
+- 投影片
+- Word 報告
+- 網頁
+
+## 我們的目標 {.flexbox .vcenter}
+
+- 建造**可重複使用**的分析報表
+- 著重於報告內容
+- 美觀？還是建議使用Power Point系列
+    - 時機未到。革命尚未成功，同志仍需努力：貢獻吧！
+    - 如果熟悉HTML、JavaScript和CSS，則可以製作出令人驚豔的效果
+
+## 坐而言不如起而行 - Hello rmarkdown
+
+- 請跟著講師學習：
+    - 如何利用Rstudio建立rmarkdown文件
+    - 如何編譯rmarkdown文件（可能需要安裝額外的套件）
+
+## rmarkdown的運作原理 {.flexbox .vcenter}
+
+- 透過[knitr](http://yihui.name/knitr/)將`.Rmd`檔案轉換為`.md`檔案
+- 利用[pandoc](http://pandoc.org/)將`.md`轉換為指定的格式
+
+## 常用rmarkdown的格式
+
+- 標題：`#`、`##`、`###`、`####`、`#####`、...
+- 分段落：兩個斷行
 
 # shiny shiny little star
 
