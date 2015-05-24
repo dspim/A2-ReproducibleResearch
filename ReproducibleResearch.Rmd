@@ -121,26 +121,21 @@ devtools::install_github('rstudio/shinyapps')
 
 ## 設定區 {.flexbox .vcenter}
 
-- 
-    ```
-    ---
-    title: "Untitled"
-    output: word_document
-    ---
-    ```
+- 請參考建立的文件範本
 
 ## 小練習 {.flexbox .vcenter}
 
 - 讓我們更改預設的文件內容標題，再重新編譯
 
-## 常用rmarkdown的格式 {.flexbox .vcenter}
+## 練習常用rmarkdown的格式 {.flexbox .vcenter}
 
-- 標題：`#`、`##`、`###`、`####`、`#####`、...
-- 分段落：兩個斷行
-- 斜體：`*文字*`、粗體：`**文字**`
-- 網址：`<>`、超連結：`[顯示內容](http://網址)`、圖片：`![圖片說明](圖片位置)`
-- 行內程式碼：`\`程式碼\``
-- 區段程式碼：![](img/r-code-block.png)
+- 請跟著講師練習以下的常用格式
+    - 標題：`#`、`##`、`###`、`####`、`#####`、...
+    - 分段落：兩個斷行
+    - 斜體：`*文字*`、粗體：`**文字**`
+    - 網址：`<>`、超連結：`[顯示內容](http://網址)`、圖片：`![圖片說明](圖片位置)`
+    - 行內程式碼：`\`程式碼\``
+    - 區段程式碼：![](img/r-code-block.png)
 
 ## R Chunk {.flexbox .vcenter}
 
@@ -156,15 +151,54 @@ rmarkdown允許我們直接將R 的輸出嵌入到報告之中：
 - 利用\`\`\`{r}來開啟一個R Chunk
 - 利用\`\`\` 來關閉一個R Chunk
 
-## 小練習 {.flexbox .vcenter}
+## 做中學 - 了解R Chunk的輸出原理 {.flexbox .vcenter}
 
-- 請在R Console上執行：
+- 閱讀範本中第一個R Chunk範例
+    - 學習如何用Rstudio選取第一個R Chunk
+- 請直接將R Chunk的程式碼送至R Console觀察輸出結果
+- 編譯文件，觀察輸出結果
+- 將第一個R Chunk的`summary(cars)`改成`head(cars)`
+- 觀察`head(cars)`在R Console的輸出結果
+- 編譯文件，觀察輸出結果
 
-- 在文件中輸入:　\`\`\`{r}
-- 
+## 做中學 - 了解Chunk Option {.flexbox .vcenter}
 
+- 閱讀範本中第二個R Chunk範例
+    - 學習如何用Rstudio選取第二個R Chunk
+- 請直接將R Chunk的程式碼送至R Console觀察輸出結果
+- 編譯文件，觀察輸出結果
+- 將`echo = TRUE`改成`echo = FALSE`
+- 編譯文件，觀察輸出結果
 
-貼至Rmd文件之中，編譯後觀看結果
+## 做中學 - 了解Chunk Option -- 2 {.flexbox .vcenter}
+
+- 回到第一個R Chunk範例
+- 請新增Chunk Option: `results='asis'`
+    - 由`{r}`改成`{r, results='asis'}`
+    - 觀察按下`,`之後發生的自動完成
+- 編譯文件，觀察輸出結果
+
+## 做中學 - 表格的輸出 {.flexbox .vcenter}
+
+- 繼續第一個R Chunk範例
+- 將`head(cars)`改成`knitr::kable(head(cars))`
+- 將程式碼送到R Console
+- 編譯文件，觀察輸出結果
+
+## 做中學 - 行內的輸出 {.flexbox .vcenter}
+
+- 在文件的最後，加上: `cars總共有\`r nrow(cars)\`列`
+- 編譯文件，觀察輸出結果
+
+## 總結 {.flexbox .vcenter}
+
+- 建立Rmd 文件並編譯
+- 輸出R Console 的結果
+- 輸出圖片
+- 使用Chunk Option
+    - 選擇是否顯示R 的程式碼
+    - 選擇輸出R Console結果的方式
+- 透過Chunk Option和knitr::kable來輸出表格
 
 # shiny shiny little star
 
