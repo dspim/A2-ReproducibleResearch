@@ -110,6 +110,7 @@ mtcars %>%
   layer_smooths(span = input_slider(0, 1)) %>%
   bind_shiny("p", "p_ui")
 ```
+
 </div>
 
 # Shiny 概觀
@@ -507,15 +508,16 @@ shinyServer(function(input, output){
 - 並透過`cat`將結果顯示出來 
 - 試問如果多次開啟browser有甚麼發現嗎?  
 
-**HINT** 可以嘗試如下列程式碼新增   
+**HINT** 可以嘗試如下列程式碼新增  
+<div class="code_block"> 
 ```{r session_ex, eval=FALSE}
 library(shiny)
-layer1 <<- layer2 <<- layer3 <<- 0  ################################### 新增此行
-layer1 <<- layer1 + 1       ########################################### 新增此行
+layer1 <<- layer2 <<- layer3 <<- 0  ########## 新增此行
+layer1 <<- layer1 + 1       ################## 新增此行
 shinyServer(function(input, output){
-  layer2 <<- layer2 + 1     ########################################### 新增此行
+  layer2 <<- layer2 + 1     ################## 新增此行
   output$distPlot <- renderPlot({
-    layer3 <<- layer3 + 1   ########################################### 新增此行
+    layer3 <<- layer3 + 1   ################## 新增此行
     x    <- faithful[, 2]
     bins <- seq(min(x), max(x), length.out = input$bins + 1)
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
@@ -523,6 +525,7 @@ shinyServer(function(input, output){
   })
 })
 ```
+</div>
 
 ## Panel to Page
 
