@@ -62,6 +62,8 @@ install.packages(c("dplyr","ggplot2","shiny","devtools", "rmarkdown"))
 devtools::install_github('rstudio/shinyapps')
 ```
 
+- 開啟線上投影片<http://hack.dsp.im/A2-ReproducibleResearch/ReproducibleResearch.html#4>
+
 # 如何輸出R 的統計分析結果
 
 ## 傳統的分析流程 {.flexbox .vcenter}
