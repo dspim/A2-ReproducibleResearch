@@ -1,13 +1,14 @@
 ---
 title: "Introduction to Shiny"
 author: "George & Wush"
-date: '`r Sys.Date()`'
+date: '`r Sys.Date()`</br><a href="http://shiny.rstudio.com/gallery/">shiny Gallery</a>'
+#subtitle:"Shiny"
 output:
   ioslides_presentation:
     css: css/dsp.css
     # logo: assets/img/Taiwan-R-logo.png
     widescreen: yes
-subtitle: shiny
+
 runtime: shiny
 ---
 
@@ -978,7 +979,7 @@ shinyApp(
 
 ## Useful Layout {.flexbox .vcenter}
 
-<img src="img/Useful-Layout.png" style='max-width: 100%;max-height: 110%'>
+<img src="img/Useful-Layout.png" style='max-width: 80%;max-height: 80%'>
 
 
 ## 當Panel 與 Page不夠用時的好選擇
