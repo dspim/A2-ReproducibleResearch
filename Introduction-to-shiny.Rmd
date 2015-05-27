@@ -647,7 +647,7 @@ shinyApp(
 ## 資料表呈現
 
 - 資料採用`ggplot2`中`diamonds`作為範例
-- UI端: `renderTable` <--> Server端: `tableOutput`或`dataTableOutput`
+- UI端:`tableOutput`或`dataTableOutput` <--> Server端: `renderTable` 或 `renderDataTable`
 
 ```{r diamonds_dataTable, echo=FALSE}
 library(shiny);library(ggplot2) # for the diamonds dataset
@@ -726,7 +726,7 @@ shinyServer(function(input, output) {
 ## 小挑戰 8 -- dataTable
 
 - 試作出ubike的dataTable，並將app取作`DSPShiny_dataTable`
-
+- shiny_v0.12: `install_github("rstudio/DT")` [DT](https://rstudio.github.io/DT/) 
 ```{r echo=FALSE}
 if (.Platform$OS.type == "windows") load("data/ubikeweather_big5.rda") else
   load("data/ubikeweather_utf8.rda")###### 新增此行
@@ -853,7 +853,7 @@ library(dplyr)
 shinyApp(
   ui=fluidPage(
     sidebarPanel(
-      selectInput(inputId='District', label='district', choices=unique(ubike$sarea)) #選我選我-行政區 中文要deploy額外處李
+      selectInput(inputId='District', label='district', choices=unique(ubike$sarea)) #選我選我-行政區 中文要deploy額外處理
       ),
     mainPanel(plotOutput(outputId="plot1"))
   ),
