@@ -105,7 +105,7 @@ shinyServer(function(input, output) {
       p=ggplot(sel_data,aes(x=toi,y=cle))+
         geom_point()+
 # geom_smooth用來畫趨勢線
-        geom_smooth()+
+        geom_smooth(method="lm")+
 #標出趨勢線的方程式
         annotate("text", x=5e5, y=5e5, 
                  label=paste('y==', r2$coefficients[1],'+', r2$coefficients[2],'*x',sep=''), 
